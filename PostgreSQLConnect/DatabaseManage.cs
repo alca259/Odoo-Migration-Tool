@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using Npgsql;
-using NpgsqlTypes;
 using PostgreSQLConnect.Exceptions;
 
 namespace PostgreSQLConnect
@@ -37,6 +36,8 @@ namespace PostgreSQLConnect
         #endregion
 
         #region Public Methods
+
+        #region Connection methods
         /// <summary>
         /// Establece una sesión con el servidor de base de datos
         /// </summary>
@@ -67,7 +68,9 @@ namespace PostgreSQLConnect
                 throw new PostgreSqlException("Cannot disconnect to PostgreSQL", ex);
             }
         }
+        #endregion
 
+        #region Read methods
         /// <summary>
         /// Ejecuta una consulta y devuelve un dataset
         /// </summary>
@@ -87,11 +90,11 @@ namespace PostgreSQLConnect
                 // Devolvemos el dataset
                 return ds;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Desconectar de la base de datos
                 Disconnect();
-                throw new PostgreSqlException();
+                throw new PostgreSqlException(ex.Message, ex);
             }
             finally
             {
@@ -105,11 +108,11 @@ namespace PostgreSQLConnect
         /// </summary>
         /// <param name="pQuery">String query</param>
         /// <returns>Lista de objetos</returns>
-        public List<object> ExecuteQueryList(string pQuery)
+        public List<List<string>> ExecuteQueryList(string pQuery)
         {
             try
             {
-                List<object> data = new List<object>();
+                List<List<string>> data = new List<List<string>>();
                 // Conectar a la base de datos
                 Connect();
                 // Declare the parameter in the query string
@@ -119,21 +122,24 @@ namespace PostgreSQLConnect
                     {
                         while (dr.Read())
                         {
+                            List<string> fieldData = new List<string>();
+
                             for (int i = 0; i < dr.FieldCount; i++)
                             {
-                                data.Add(dr[i]);
-                                Console.Write("{0} \t", dr[i]);
+                                fieldData.Add(dr[i].ToString());
                             }
+
+                            data.Add(fieldData);
                         }
                     }
                 }
                 return data;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Desconectar de la base de datos
                 Disconnect();
-                throw new PostgreSqlException();
+                throw new PostgreSqlException(ex.Message, ex);
             }
             finally
             {
@@ -141,6 +147,110 @@ namespace PostgreSQLConnect
                 Disconnect();
             }
         }
+        #endregion
+
+        #region Information schema
+        /// <summary>
+        /// Devuelve las tablas de una base de datos
+        /// </summary>
+        /// <returns></returns>
+        public List<object> GetTables()
+        {
+            try
+            {
+                List<object> data = new List<object>();
+                // Conectar a la base de datos
+                Connect();
+                // Declare the parameter in the query string
+                using (NpgsqlCommand command = new NpgsqlCommand(string.Format(@"
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE    table_schema = 'public' 
+                    AND table_catalog = '{0}'
+                    AND table_type = 'BASE TABLE'", Database), conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            for (int i = 0; i < dr.FieldCount; i++)
+                            {
+                                data.Add(dr[i]);
+                            }
+                        }
+                    }
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+        }
+
+        /// <summary>
+        /// Devuelve las columnas de una tabla con su tipo
+        /// </summary>
+        /// <param name="pTable"></param>
+        /// <returns></returns>
+        public List<object> GetColumnsForTable(string pTable)
+        {
+            try
+            {
+                List<object> data = new List<object>();
+                // Conectar a la base de datos
+                Connect();
+                // Declare the parameter in the query string
+
+                string querySql = string.Format(@"
+                SELECT
+                   CASE 
+                    WHEN data_type = 'character varying' AND character_maximum_length is not null THEN
+                     column_name||' '||data_type||'('||character_maximum_length||'),'
+                    WHEN data_type = 'character varying' AND character_octet_length is not null THEN
+                     column_name||' '||data_type||','
+                   ELSE
+                    column_name||' '||data_type||','
+                  END as " + '"' + "Columnas de la tabla" + '"' + @"
+                FROM information_schema.columns
+                WHERE table_name   = '{0}'", pTable);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            for (int i = 0; i < dr.FieldCount; i++)
+                            {
+                                data.Add(dr[i]);
+                            }
+                        }
+                    }
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+        }
+        #endregion
+
         #endregion
     }
 }
