@@ -28,72 +28,65 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
+            this.btnSetServer = new Telerik.WinControls.UI.RadButton();
+            this.visualStudio2012LightTheme1 = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
+            this.radPanel1 = new Telerik.WinControls.UI.RadPanel();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetServer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).BeginInit();
+            this.radPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
-            // button3
+            // btnSetServer
             // 
-            this.button3.Location = new System.Drawing.Point(125, 77);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 0;
-            this.button3.Text = "get tables";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnSetServer.DisplayStyle = Telerik.WinControls.DisplayStyle.Image;
+            this.btnSetServer.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnSetServer.Image = global::OdooTool.Properties.Resources.tool_icon;
+            this.btnSetServer.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnSetServer.Location = new System.Drawing.Point(0, 0);
+            this.btnSetServer.Name = "btnSetServer";
+            this.btnSetServer.Size = new System.Drawing.Size(40, 40);
+            this.btnSetServer.TabIndex = 2;
+            this.btnSetServer.ThemeName = "VisualStudio2012Light";
+            this.btnSetServer.Click += new System.EventHandler(this.btnSetServer_Click);
             // 
-            // button4
+            // radPanel1
             // 
-            this.button4.Location = new System.Drawing.Point(227, 77);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(108, 23);
-            this.button4.TabIndex = 0;
-            this.button4.Text = "get users columns";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(125, 130);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 39);
-            this.button5.TabIndex = 1;
-            this.button5.Text = "get dataset user data";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(227, 130);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 50);
-            this.button6.TabIndex = 1;
-            this.button6.Text = "get list objects user data";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.radPanel1.Controls.Add(this.btnSetServer);
+            this.radPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.radPanel1.Location = new System.Drawing.Point(0, 0);
+            this.radPanel1.Name = "radPanel1";
+            this.radPanel1.Size = new System.Drawing.Size(771, 40);
+            this.radPanel1.TabIndex = 3;
+            this.radPanel1.ThemeName = "VisualStudio2012Light";
+            ((Telerik.WinControls.Primitives.BorderPrimitive)(this.radPanel1.GetChildAt(0).GetChildAt(1))).Visibility = Telerik.WinControls.ElementVisibility.Hidden;
             // 
             // StartWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(771, 484);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.radPanel1);
             this.Name = "StartWindow";
+            // 
+            // 
+            // 
+            this.RootElement.ApplyShapeToControl = true;
             this.Text = "StartWindow";
+            this.ThemeName = "VisualStudio2012Light";
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetServer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).EndInit();
+            this.radPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
+        private Telerik.WinControls.UI.RadButton btnSetServer;
+        private Telerik.WinControls.Themes.VisualStudio2012LightTheme visualStudio2012LightTheme1;
+        private Telerik.WinControls.UI.RadPanel radPanel1;
+
     }
 }

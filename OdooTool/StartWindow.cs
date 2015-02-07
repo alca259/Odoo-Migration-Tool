@@ -1,9 +1,10 @@
 ﻿using System.Windows.Forms;
 using PostgreSQLConnect;
+using Telerik.WinControls.UI;
 
 namespace OdooTool
 {
-    public partial class StartWindow : Form
+    public partial class StartWindow : RadForm
     {
         private DatabaseManage manager;
         public StartWindow()
@@ -30,6 +31,11 @@ namespace OdooTool
         private void button6_Click(object sender, System.EventArgs e)
         {
             var data = manager.ExecuteQueryList("select * from res_users");
+        }
+
+        private void btnSetServer_Click(object sender, System.EventArgs e)
+        {
+
         }
     }
 }
