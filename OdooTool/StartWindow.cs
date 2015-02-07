@@ -35,7 +35,8 @@ namespace OdooTool
 
         private void btnSetServer_Click(object sender, System.EventArgs e)
         {
-
+            Settings settingsForm = new Settings();
+            settingsForm.ShowDialog(this);
         }
     }
 }

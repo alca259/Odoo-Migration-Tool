@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="DatabaseManage.cs" />
     <Compile Include="Exceptions\PostgreSqlException.cs" />
+    <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 using PostgreSQLConnect.Exceptions;
+using PostgreSQLConnect.Models;
 
 namespace PostgreSQLConnect
 {
@@ -25,6 +26,15 @@ namespace PostgreSQLConnect
             User = pUser;
             Password = pPassword;
             Database = pDatabase;
+        }
+
+        public DatabaseManage(SettingsModel settings)
+        {
+            Host = settings.Host;
+            Port = settings.Port;
+            User = settings.User;
+            Password = settings.Password;
+            Database = settings.Database;
         }
         #endregion
 
