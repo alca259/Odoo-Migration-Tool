@@ -164,11 +164,11 @@ namespace PostgreSQLConnect
         /// Devuelve las tablas de una base de datos
         /// </summary>
         /// <returns></returns>
-        public List<object> GetTables()
+        public List<string> GetTables()
         {
             try
             {
-                List<object> data = new List<object>();
+                List<string> data = new List<string>();
                 // Conectar a la base de datos
                 Connect();
                 // Declare the parameter in the query string
@@ -183,10 +183,51 @@ namespace PostgreSQLConnect
                     {
                         while (dr.Read())
                         {
-                            for (int i = 0; i < dr.FieldCount; i++)
-                            {
-                                data.Add(dr[i]);
-                            }
+                            data.Add(dr[0].ToString());
+                        }
+                    }
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+        }
+
+        /// <summary>
+        /// Devuelve las columnas de una tabla
+        /// </summary>
+        /// <param name="pTable"></param>
+        /// <returns></returns>
+        public List<string> GetColumnsForTable(string pTable)
+        {
+            try
+            {
+                List<string> data = new List<string>();
+                // Conectar a la base de datos
+                Connect();
+                // Declare the parameter in the query string
+
+                string querySql = string.Format(@"
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name   = '{0}'", pTable);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            data.Add(dr[0].ToString());
                         }
                     }
                 }
@@ -210,11 +251,11 @@ namespace PostgreSQLConnect
         /// </summary>
         /// <param name="pTable"></param>
         /// <returns></returns>
-        public List<object> GetColumnsForTable(string pTable)
+        public List<string> GetColumnsAndTypesForTable(string pTable)
         {
             try
             {
-                List<object> data = new List<object>();
+                List<string> data = new List<string>();
                 // Conectar a la base de datos
                 Connect();
                 // Declare the parameter in the query string
@@ -238,10 +279,7 @@ namespace PostgreSQLConnect
                     {
                         while (dr.Read())
                         {
-                            for (int i = 0; i < dr.FieldCount; i++)
-                            {
-                                data.Add(dr[i]);
-                            }
+                            data.Add(dr[0].ToString());
                         }
                     }
                 }

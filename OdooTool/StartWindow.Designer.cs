@@ -28,55 +28,345 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnSetServer = new Telerik.WinControls.UI.RadButton();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartWindow));
+            this.btnSetSourceServer = new Telerik.WinControls.UI.RadButton();
             this.visualStudio2012LightTheme1 = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
-            this.radPanel1 = new Telerik.WinControls.UI.RadPanel();
-            ((System.ComponentModel.ISupportInitialize)(this.btnSetServer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).BeginInit();
-            this.radPanel1.SuspendLayout();
+            this.radSplitContainer1 = new Telerik.WinControls.UI.RadSplitContainer();
+            this.splitPanel1 = new Telerik.WinControls.UI.SplitPanel();
+            this.loadDestinationTables = new Telerik.WinControls.UI.RadButton();
+            this.btnSetDestinationServer = new Telerik.WinControls.UI.RadButton();
+            this.loadSourceTables = new Telerik.WinControls.UI.RadButton();
+            this.splitPanel2 = new Telerik.WinControls.UI.SplitPanel();
+            this.treeDest = new Telerik.WinControls.UI.RadTreeView();
+            this.treeOrig = new Telerik.WinControls.UI.RadTreeView();
+            this.splitPanel3 = new Telerik.WinControls.UI.SplitPanel();
+            this.radLabel1 = new Telerik.WinControls.UI.RadLabel();
+            this.splitPanel4 = new Telerik.WinControls.UI.SplitPanel();
+            this.radTextBox1 = new Telerik.WinControls.UI.RadTextBox();
+            this.radSplitContainer2 = new Telerik.WinControls.UI.RadSplitContainer();
+            this.splitPanel5 = new Telerik.WinControls.UI.SplitPanel();
+            this.splitPanel6 = new Telerik.WinControls.UI.SplitPanel();
+            this.splitPanel7 = new Telerik.WinControls.UI.SplitPanel();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetSourceServer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radSplitContainer1)).BeginInit();
+            this.radSplitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel1)).BeginInit();
+            this.splitPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.loadDestinationTables)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetDestinationServer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.loadSourceTables)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel2)).BeginInit();
+            this.splitPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.treeDest)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeOrig)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel3)).BeginInit();
+            this.splitPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel4)).BeginInit();
+            this.splitPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radTextBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radSplitContainer2)).BeginInit();
+            this.radSplitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel5)).BeginInit();
+            this.splitPanel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel7)).BeginInit();
+            this.splitPanel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
-            // btnSetServer
+            // btnSetSourceServer
             // 
-            this.btnSetServer.DisplayStyle = Telerik.WinControls.DisplayStyle.Image;
-            this.btnSetServer.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSetServer.Image = global::OdooTool.Properties.Resources.tool_icon;
-            this.btnSetServer.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            this.btnSetServer.Location = new System.Drawing.Point(0, 0);
-            this.btnSetServer.Name = "btnSetServer";
-            this.btnSetServer.Size = new System.Drawing.Size(40, 40);
-            this.btnSetServer.TabIndex = 2;
-            this.btnSetServer.ThemeName = "VisualStudio2012Light";
-            this.btnSetServer.Click += new System.EventHandler(this.btnSetServer_Click);
+            this.btnSetSourceServer.DisplayStyle = Telerik.WinControls.DisplayStyle.Image;
+            this.btnSetSourceServer.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnSetSourceServer.Image = global::OdooTool.Properties.Resources.tool_icon;
+            this.btnSetSourceServer.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnSetSourceServer.Location = new System.Drawing.Point(0, 0);
+            this.btnSetSourceServer.Name = "btnSetSourceServer";
+            this.btnSetSourceServer.Size = new System.Drawing.Size(43, 45);
+            this.btnSetSourceServer.TabIndex = 2;
+            this.btnSetSourceServer.ThemeName = "VisualStudio2012Light";
+            this.btnSetSourceServer.Click += new System.EventHandler(this.btnSetSourceServer_Click);
             // 
-            // radPanel1
+            // radSplitContainer1
             // 
-            this.radPanel1.Controls.Add(this.btnSetServer);
-            this.radPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.radPanel1.Location = new System.Drawing.Point(0, 0);
-            this.radPanel1.Name = "radPanel1";
-            this.radPanel1.Size = new System.Drawing.Size(771, 40);
-            this.radPanel1.TabIndex = 3;
-            this.radPanel1.ThemeName = "VisualStudio2012Light";
-            ((Telerik.WinControls.Primitives.BorderPrimitive)(this.radPanel1.GetChildAt(0).GetChildAt(1))).Visibility = Telerik.WinControls.ElementVisibility.Hidden;
+            this.radSplitContainer1.Controls.Add(this.splitPanel1);
+            this.radSplitContainer1.Controls.Add(this.splitPanel2);
+            this.radSplitContainer1.Controls.Add(this.splitPanel3);
+            this.radSplitContainer1.Controls.Add(this.splitPanel4);
+            this.radSplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.radSplitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.radSplitContainer1.Name = "radSplitContainer1";
+            this.radSplitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // 
+            // 
+            this.radSplitContainer1.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.radSplitContainer1.Size = new System.Drawing.Size(771, 520);
+            this.radSplitContainer1.SplitterWidth = 3;
+            this.radSplitContainer1.TabIndex = 5;
+            this.radSplitContainer1.TabStop = false;
+            this.radSplitContainer1.ThemeName = "VisualStudio2012Light";
+            // 
+            // splitPanel1
+            // 
+            this.splitPanel1.Controls.Add(this.loadDestinationTables);
+            this.splitPanel1.Controls.Add(this.btnSetDestinationServer);
+            this.splitPanel1.Controls.Add(this.loadSourceTables);
+            this.splitPanel1.Controls.Add(this.btnSetSourceServer);
+            this.splitPanel1.Location = new System.Drawing.Point(0, 0);
+            this.splitPanel1.Name = "splitPanel1";
+            // 
+            // 
+            // 
+            this.splitPanel1.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel1.Size = new System.Drawing.Size(771, 45);
+            this.splitPanel1.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, -0.1619374F);
+            this.splitPanel1.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, -92);
+            this.splitPanel1.TabIndex = 0;
+            this.splitPanel1.TabStop = false;
+            this.splitPanel1.Text = "splitPanel1";
+            this.splitPanel1.ThemeName = "VisualStudio2012Light";
+            // 
+            // loadDestinationTables
+            // 
+            this.loadDestinationTables.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
+            this.loadDestinationTables.Dock = System.Windows.Forms.DockStyle.Right;
+            this.loadDestinationTables.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.loadDestinationTables.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.loadDestinationTables.Location = new System.Drawing.Point(571, 0);
+            this.loadDestinationTables.Name = "loadDestinationTables";
+            this.loadDestinationTables.Size = new System.Drawing.Size(157, 45);
+            this.loadDestinationTables.TabIndex = 4;
+            this.loadDestinationTables.Text = "Load tables (Destination)";
+            this.loadDestinationTables.ThemeName = "VisualStudio2012Light";
+            // 
+            // btnSetDestinationServer
+            // 
+            this.btnSetDestinationServer.DisplayStyle = Telerik.WinControls.DisplayStyle.Image;
+            this.btnSetDestinationServer.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnSetDestinationServer.Image = global::OdooTool.Properties.Resources.tool_icon;
+            this.btnSetDestinationServer.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnSetDestinationServer.Location = new System.Drawing.Point(728, 0);
+            this.btnSetDestinationServer.Name = "btnSetDestinationServer";
+            this.btnSetDestinationServer.Size = new System.Drawing.Size(43, 45);
+            this.btnSetDestinationServer.TabIndex = 5;
+            this.btnSetDestinationServer.ThemeName = "VisualStudio2012Light";
+            this.btnSetDestinationServer.Click += new System.EventHandler(this.btnSetDestinationServer_Click);
+            // 
+            // loadSourceTables
+            // 
+            this.loadSourceTables.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
+            this.loadSourceTables.Dock = System.Windows.Forms.DockStyle.Left;
+            this.loadSourceTables.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.loadSourceTables.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.loadSourceTables.Location = new System.Drawing.Point(43, 0);
+            this.loadSourceTables.Name = "loadSourceTables";
+            this.loadSourceTables.Size = new System.Drawing.Size(141, 45);
+            this.loadSourceTables.TabIndex = 3;
+            this.loadSourceTables.Text = "Load tables (Source)";
+            this.loadSourceTables.ThemeName = "VisualStudio2012Light";
+            // 
+            // splitPanel2
+            // 
+            this.splitPanel2.Controls.Add(this.radSplitContainer2);
+            this.splitPanel2.Location = new System.Drawing.Point(0, 48);
+            this.splitPanel2.Name = "splitPanel2";
+            this.splitPanel2.Padding = new System.Windows.Forms.Padding(5);
+            // 
+            // 
+            // 
+            this.splitPanel2.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel2.Size = new System.Drawing.Size(771, 291);
+            this.splitPanel2.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, 0.3194716F);
+            this.splitPanel2.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, 146);
+            this.splitPanel2.TabIndex = 1;
+            this.splitPanel2.TabStop = false;
+            this.splitPanel2.Text = "splitPanel2";
+            this.splitPanel2.ThemeName = "VisualStudio2012Light";
+            // 
+            // treeDest
+            // 
+            this.treeDest.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeDest.Location = new System.Drawing.Point(0, 0);
+            this.treeDest.Name = "treeDest";
+            this.treeDest.Size = new System.Drawing.Size(346, 281);
+            this.treeDest.TabIndex = 6;
+            this.treeDest.Text = "radTreeView1";
+            this.treeDest.ThemeName = "VisualStudio2012Light";
+            // 
+            // treeOrig
+            // 
+            this.treeOrig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeOrig.Location = new System.Drawing.Point(0, 0);
+            this.treeOrig.Name = "treeOrig";
+            this.treeOrig.Size = new System.Drawing.Size(338, 281);
+            this.treeOrig.TabIndex = 5;
+            this.treeOrig.Text = "radTreeView1";
+            this.treeOrig.ThemeName = "VisualStudio2012Light";
+            // 
+            // splitPanel3
+            // 
+            this.splitPanel3.Controls.Add(this.radLabel1);
+            this.splitPanel3.Location = new System.Drawing.Point(0, 342);
+            this.splitPanel3.Name = "splitPanel3";
+            this.splitPanel3.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            // 
+            // 
+            // 
+            this.splitPanel3.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel3.Size = new System.Drawing.Size(771, 28);
+            this.splitPanel3.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, -0.1952055F);
+            this.splitPanel3.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, -79);
+            this.splitPanel3.TabIndex = 2;
+            this.splitPanel3.TabStop = false;
+            this.splitPanel3.Text = "splitPanel3";
+            this.splitPanel3.ThemeName = "VisualStudio2012Light";
+            // 
+            // radLabel1
+            // 
+            this.radLabel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.radLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+            this.radLabel1.Location = new System.Drawing.Point(0, 5);
+            this.radLabel1.Name = "radLabel1";
+            this.radLabel1.Size = new System.Drawing.Size(71, 18);
+            this.radLabel1.TabIndex = 0;
+            this.radLabel1.Text = "Query result";
+            this.radLabel1.ThemeName = "VisualStudio2012Light";
+            // 
+            // splitPanel4
+            // 
+            this.splitPanel4.Controls.Add(this.radTextBox1);
+            this.splitPanel4.Location = new System.Drawing.Point(0, 373);
+            this.splitPanel4.Name = "splitPanel4";
+            // 
+            // 
+            // 
+            this.splitPanel4.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel4.Size = new System.Drawing.Size(771, 147);
+            this.splitPanel4.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, 0.03767123F);
+            this.splitPanel4.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, 25);
+            this.splitPanel4.TabIndex = 3;
+            this.splitPanel4.TabStop = false;
+            this.splitPanel4.Text = "splitPanel4";
+            this.splitPanel4.ThemeName = "VisualStudio2012Light";
+            // 
+            // radTextBox1
+            // 
+            this.radTextBox1.AutoSize = false;
+            this.radTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.radTextBox1.Location = new System.Drawing.Point(0, 0);
+            this.radTextBox1.Multiline = true;
+            this.radTextBox1.Name = "radTextBox1";
+            this.radTextBox1.Size = new System.Drawing.Size(771, 147);
+            this.radTextBox1.TabIndex = 0;
+            // 
+            // radSplitContainer2
+            // 
+            this.radSplitContainer2.Controls.Add(this.splitPanel5);
+            this.radSplitContainer2.Controls.Add(this.splitPanel6);
+            this.radSplitContainer2.Controls.Add(this.splitPanel7);
+            this.radSplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.radSplitContainer2.Location = new System.Drawing.Point(5, 5);
+            this.radSplitContainer2.Name = "radSplitContainer2";
+            // 
+            // 
+            // 
+            this.radSplitContainer2.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.radSplitContainer2.Size = new System.Drawing.Size(761, 281);
+            this.radSplitContainer2.TabIndex = 0;
+            this.radSplitContainer2.TabStop = false;
+            this.radSplitContainer2.Text = "radSplitContainer2";
+            // 
+            // splitPanel5
+            // 
+            this.splitPanel5.Controls.Add(this.treeOrig);
+            this.splitPanel5.Location = new System.Drawing.Point(0, 0);
+            this.splitPanel5.Name = "splitPanel5";
+            // 
+            // 
+            // 
+            this.splitPanel5.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.splitPanel5.Size = new System.Drawing.Size(338, 281);
+            this.splitPanel5.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0.1155378F, 0F);
+            this.splitPanel5.SizeInfo.SplitterCorrection = new System.Drawing.Size(87, 0);
+            this.splitPanel5.TabIndex = 0;
+            this.splitPanel5.TabStop = false;
+            this.splitPanel5.Text = "splitPanel5";
+            // 
+            // splitPanel6
+            // 
+            this.splitPanel6.Location = new System.Drawing.Point(342, 0);
+            this.splitPanel6.Name = "splitPanel6";
+            // 
+            // 
+            // 
+            this.splitPanel6.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.splitPanel6.Size = new System.Drawing.Size(69, 281);
+            this.splitPanel6.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(-0.2416999F, 0F);
+            this.splitPanel6.SizeInfo.SplitterCorrection = new System.Drawing.Size(-182, 0);
+            this.splitPanel6.TabIndex = 1;
+            this.splitPanel6.TabStop = false;
+            this.splitPanel6.Text = "splitPanel6";
+            // 
+            // splitPanel7
+            // 
+            this.splitPanel7.Controls.Add(this.treeDest);
+            this.splitPanel7.Location = new System.Drawing.Point(415, 0);
+            this.splitPanel7.Name = "splitPanel7";
+            // 
+            // 
+            // 
+            this.splitPanel7.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.splitPanel7.Size = new System.Drawing.Size(346, 281);
+            this.splitPanel7.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0.126162F, 0F);
+            this.splitPanel7.SizeInfo.SplitterCorrection = new System.Drawing.Size(95, 0);
+            this.splitPanel7.TabIndex = 2;
+            this.splitPanel7.TabStop = false;
+            this.splitPanel7.Text = "splitPanel7";
             // 
             // StartWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(771, 484);
-            this.Controls.Add(this.radPanel1);
+            this.ClientSize = new System.Drawing.Size(771, 520);
+            this.Controls.Add(this.radSplitContainer1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "StartWindow";
             // 
             // 
             // 
             this.RootElement.ApplyShapeToControl = true;
-            this.Text = "StartWindow";
+            this.Text = "Migration Tool PostgreSQL - Optimized for Odoo";
             this.ThemeName = "VisualStudio2012Light";
-            ((System.ComponentModel.ISupportInitialize)(this.btnSetServer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).EndInit();
-            this.radPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetSourceServer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radSplitContainer1)).EndInit();
+            this.radSplitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel1)).EndInit();
+            this.splitPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.loadDestinationTables)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetDestinationServer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.loadSourceTables)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel2)).EndInit();
+            this.splitPanel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.treeDest)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeOrig)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel3)).EndInit();
+            this.splitPanel3.ResumeLayout(false);
+            this.splitPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel4)).EndInit();
+            this.splitPanel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.radTextBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radSplitContainer2)).EndInit();
+            this.radSplitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel5)).EndInit();
+            this.splitPanel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitPanel7)).EndInit();
+            this.splitPanel7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
@@ -84,9 +374,24 @@
 
         #endregion
 
-        private Telerik.WinControls.UI.RadButton btnSetServer;
+        private Telerik.WinControls.UI.RadButton btnSetSourceServer;
         private Telerik.WinControls.Themes.VisualStudio2012LightTheme visualStudio2012LightTheme1;
-        private Telerik.WinControls.UI.RadPanel radPanel1;
+        private Telerik.WinControls.UI.RadSplitContainer radSplitContainer1;
+        private Telerik.WinControls.UI.SplitPanel splitPanel1;
+        private Telerik.WinControls.UI.SplitPanel splitPanel2;
+        private Telerik.WinControls.UI.RadTreeView treeOrig;
+        private Telerik.WinControls.UI.SplitPanel splitPanel3;
+        private Telerik.WinControls.UI.RadButton loadDestinationTables;
+        private Telerik.WinControls.UI.RadButton loadSourceTables;
+        private Telerik.WinControls.UI.RadTextBox radTextBox1;
+        private Telerik.WinControls.UI.SplitPanel splitPanel4;
+        private Telerik.WinControls.UI.RadLabel radLabel1;
+        private Telerik.WinControls.UI.RadButton btnSetDestinationServer;
+        private Telerik.WinControls.UI.RadTreeView treeDest;
+        private Telerik.WinControls.UI.RadSplitContainer radSplitContainer2;
+        private Telerik.WinControls.UI.SplitPanel splitPanel5;
+        private Telerik.WinControls.UI.SplitPanel splitPanel6;
+        private Telerik.WinControls.UI.SplitPanel splitPanel7;
 
     }
 }

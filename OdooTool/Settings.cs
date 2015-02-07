@@ -8,6 +8,8 @@ namespace OdooTool
 {
     public partial class Settings : RadForm
     {
+        private bool destination { get; set; }
+
         public Settings()
         {
             InitializeComponent();
@@ -22,6 +24,22 @@ namespace OdooTool
                 txtDB.Text = model.Database;
             }
             RadMessageBox.SetThemeName("VisualStudio2012Light"); 
+        }
+        public Settings(bool isDestination)
+        {
+            InitializeComponent();
+            SettingsManager.Initialize();
+            SettingsModel model = SettingsManager.GetXml(isDestination);
+            if (model != null)
+            {
+                txtHost.Text = model.Host;
+                txtPort.Value = model.Port;
+                txtUser.Text = model.User;
+                txtPass.Text = model.Password;
+                txtDB.Text = model.Database;
+            }
+            RadMessageBox.SetThemeName("VisualStudio2012Light");
+            destination = isDestination;
         }
 
         private void DisplayMessage(string message)
@@ -63,7 +81,8 @@ namespace OdooTool
                 Port = (int)txtPort.Value,
                 User = txtUser.Text,
                 Password = txtPass.Text,
-                Database = txtDB.Text
+                Database = txtDB.Text,
+                Destiny = !destination ? "SOURCE" : "DESTINATION",
             });
             
             Dispose();
