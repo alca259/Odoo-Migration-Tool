@@ -38,14 +38,11 @@ namespace PostgreSQLConnect
         }
         #endregion
 
-        #region Private Methods
-        private string GetConnectionString()
+        #region Public Methods
+        public string GetConnectionString()
         {
             return string.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};", Host, Port, User, Password, Database);
         }
-        #endregion
-
-        #region Public Methods
 
         #region Connection methods
         /// <summary>
@@ -177,7 +174,8 @@ namespace PostgreSQLConnect
                 FROM information_schema.tables
                 WHERE    table_schema = 'public' 
                     AND table_catalog = '{0}'
-                    AND table_type = 'BASE TABLE'", Database), conn))
+                    AND table_type = 'BASE TABLE'
+                ORDER BY table_name", Database), conn))
                 {
                     using (NpgsqlDataReader dr = command.ExecuteReader())
                     {
@@ -219,7 +217,8 @@ namespace PostgreSQLConnect
                 string querySql = string.Format(@"
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name   = '{0}'", pTable);
+                WHERE table_name   = '{0}'
+                ORDER BY column_name", pTable);
 
                 using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
                 {
@@ -264,11 +263,11 @@ namespace PostgreSQLConnect
                 SELECT
                    CASE 
                     WHEN data_type = 'character varying' AND character_maximum_length is not null THEN
-                     column_name||' '||data_type||'('||character_maximum_length||'),'
+                     column_name||' '||data_type||'('||character_maximum_length||')'
                     WHEN data_type = 'character varying' AND character_octet_length is not null THEN
-                     column_name||' '||data_type||','
+                     column_name||' '||data_type
                    ELSE
-                    column_name||' '||data_type||','
+                    column_name||' '||data_type
                   END as " + '"' + "Columnas de la tabla" + '"' + @"
                 FROM information_schema.columns
                 WHERE table_name   = '{0}'", pTable);
