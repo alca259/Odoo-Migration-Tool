@@ -109,8 +109,9 @@
             // 
             // 
             // 
-            this.radSplitContainer1.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.radSplitContainer1.RootElement.MinSize = new System.Drawing.Size(0, 0);
             this.radSplitContainer1.Size = new System.Drawing.Size(608, 86);
+            this.radSplitContainer1.SplitterWidth = 3;
             this.radSplitContainer1.TabIndex = 4;
             this.radSplitContainer1.TabStop = false;
             this.radSplitContainer1.Text = "radSplitContainer1";
@@ -127,7 +128,7 @@
             // 
             // 
             // 
-            this.splitPanel1.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.splitPanel1.RootElement.MinSize = new System.Drawing.Size(0, 0);
             this.splitPanel1.Size = new System.Drawing.Size(75, 86);
             this.splitPanel1.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(-0.1240157F, 0F);
             this.splitPanel1.SizeInfo.SplitterCorrection = new System.Drawing.Size(-94, 0);
@@ -179,7 +180,7 @@
             // 
             // 
             // 
-            this.splitPanel2.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.splitPanel2.RootElement.MinSize = new System.Drawing.Size(0, 0);
             this.splitPanel2.Size = new System.Drawing.Size(225, 86);
             this.splitPanel2.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0.1253281F, 0F);
             this.splitPanel2.SizeInfo.SplitterCorrection = new System.Drawing.Size(96, 0);
@@ -227,7 +228,7 @@
             // 
             // 
             // 
-            this.splitPanel3.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.splitPanel3.RootElement.MinSize = new System.Drawing.Size(0, 0);
             this.splitPanel3.Size = new System.Drawing.Size(75, 86);
             this.splitPanel3.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(-0.1240157F, 0F);
             this.splitPanel3.SizeInfo.SplitterCorrection = new System.Drawing.Size(-94, 0);
@@ -267,7 +268,7 @@
             // 
             // 
             // 
-            this.splitPanel4.RootElement.MinSize = new System.Drawing.Size(25, 25);
+            this.splitPanel4.RootElement.MinSize = new System.Drawing.Size(0, 0);
             this.splitPanel4.Size = new System.Drawing.Size(224, 86);
             this.splitPanel4.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0.1227034F, 0F);
             this.splitPanel4.SizeInfo.SplitterCorrection = new System.Drawing.Size(92, 0);
@@ -324,6 +325,7 @@
             // 
             // 
             this.RootElement.ApplyShapeToControl = true;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.ThemeName = "VisualStudio2012Light";
             ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).EndInit();

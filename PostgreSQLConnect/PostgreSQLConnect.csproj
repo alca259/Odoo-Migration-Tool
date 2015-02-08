@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="DatabaseManage.cs" />
     <Compile Include="Exceptions\PostgreSqlException.cs" />
+    <Compile Include="Models\ColumnType.cs" />
+    <Compile Include="Models\QueryResult.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Models\TableModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -48,6 +48,8 @@
             this.radLabel1 = new Telerik.WinControls.UI.RadLabel();
             this.splitPanel4 = new Telerik.WinControls.UI.SplitPanel();
             this.txtResult = new Telerik.WinControls.UI.RadTextBox();
+            this.btnExecute = new Telerik.WinControls.UI.RadButton();
+            this.btnCopy = new Telerik.WinControls.UI.RadButton();
             ((System.ComponentModel.ISupportInitialize)(this.btnSetSourceServer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radSplitContainer1)).BeginInit();
             this.radSplitContainer1.SuspendLayout();
@@ -75,6 +77,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel4)).BeginInit();
             this.splitPanel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtResult)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExecute)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCopy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -237,10 +241,13 @@
             this.treeOrig.Text = "radTreeView1";
             this.treeOrig.ThemeName = "VisualStudio2012Light";
             this.treeOrig.TriStateMode = true;
+            this.treeOrig.NodeCheckedChanged += new Telerik.WinControls.UI.TreeNodeCheckedEventHandler(this.treeOrig_NodeCheckedChanged);
             // 
             // splitPanel6
             // 
             this.splitPanel6.Controls.Add(this.btnGenerate);
+            this.splitPanel6.Controls.Add(this.btnCopy);
+            this.splitPanel6.Controls.Add(this.btnExecute);
             this.splitPanel6.Location = new System.Drawing.Point(448, 0);
             this.splitPanel6.Name = "splitPanel6";
             // 
@@ -262,7 +269,7 @@
             this.btnGenerate.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnGenerate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnGenerate.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            this.btnGenerate.Location = new System.Drawing.Point(0, 317);
+            this.btnGenerate.Location = new System.Drawing.Point(0, 227);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(91, 45);
             this.btnGenerate.TabIndex = 4;
@@ -299,6 +306,7 @@
             this.treeDest.Text = "radTreeView1";
             this.treeDest.ThemeName = "VisualStudio2012Light";
             this.treeDest.TriStateMode = true;
+            this.treeDest.NodeCheckedChanged += new Telerik.WinControls.UI.TreeNodeCheckedEventHandler(this.treeDest_NodeCheckedChanged);
             // 
             // splitPanel3
             // 
@@ -353,8 +361,41 @@
             this.txtResult.Location = new System.Drawing.Point(0, 0);
             this.txtResult.Multiline = true;
             this.txtResult.Name = "txtResult";
+            this.txtResult.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtResult.Size = new System.Drawing.Size(1007, 187);
             this.txtResult.TabIndex = 0;
+            // 
+            // btnExecute
+            // 
+            this.btnExecute.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
+            this.btnExecute.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnExecute.Enabled = false;
+            this.btnExecute.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExecute.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnExecute.Location = new System.Drawing.Point(0, 317);
+            this.btnExecute.Name = "btnExecute";
+            this.btnExecute.Size = new System.Drawing.Size(91, 45);
+            this.btnExecute.TabIndex = 5;
+            this.btnExecute.Text = "Execute Migration";
+            this.btnExecute.TextWrap = true;
+            this.btnExecute.ThemeName = "VisualStudio2012Light";
+            this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
+            // 
+            // btnCopy
+            // 
+            this.btnCopy.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
+            this.btnCopy.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnCopy.Enabled = false;
+            this.btnCopy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCopy.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnCopy.Location = new System.Drawing.Point(0, 272);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(91, 45);
+            this.btnCopy.TabIndex = 6;
+            this.btnCopy.Text = "Copy SQL";
+            this.btnCopy.TextWrap = true;
+            this.btnCopy.ThemeName = "VisualStudio2012Light";
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // StartWindow
             // 
@@ -400,6 +441,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel4)).EndInit();
             this.splitPanel4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.txtResult)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExecute)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCopy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
@@ -426,6 +469,8 @@
         private Telerik.WinControls.UI.SplitPanel splitPanel6;
         private Telerik.WinControls.UI.SplitPanel splitPanel7;
         private Telerik.WinControls.UI.RadButton btnGenerate;
+        private Telerik.WinControls.UI.RadButton btnExecute;
+        private Telerik.WinControls.UI.RadButton btnCopy;
 
     }
 }

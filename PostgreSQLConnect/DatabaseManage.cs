@@ -39,12 +39,18 @@ namespace PostgreSQLConnect
         #endregion
 
         #region Public Methods
+
+        #region Connection methods
         public string GetConnectionString()
         {
             return string.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};", Host, Port, User, Password, Database);
         }
 
-        #region Connection methods
+        public string GetConnectionStringForDbLink()
+        {
+            return string.Format("hostaddr={0} port={1} dbname={4} user={2} password={3}", Host, Port, User, Password, Database);
+        }
+
         /// <summary>
         /// Establece una sesión con el servidor de base de datos
         /// </summary>
@@ -85,17 +91,15 @@ namespace PostgreSQLConnect
         /// <returns>Dataset</returns>
         public DataSet ExecuteQueryDataset(string pQuery)
         {
+            // Cargamos el dataset
+            DataSet ds = new DataSet();
             try
             {
                 // Conectar a la base de datos
                 Connect();
                 // Realizamos la peticion
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(pQuery, conn);
-                // Cargamos el dataset
-                DataSet ds = new DataSet();
                 da.Fill(ds);
-                // Devolvemos el dataset
-                return ds;
             }
             catch (Exception ex)
             {
@@ -108,6 +112,8 @@ namespace PostgreSQLConnect
                 // Desconectar de la base de datos
                 Disconnect();
             }
+            // Devolvemos el dataset
+            return ds;
         }
 
         /// <summary>
@@ -117,11 +123,12 @@ namespace PostgreSQLConnect
         /// <returns>Lista de objetos</returns>
         public List<List<string>> ExecuteQueryList(string pQuery)
         {
+            List<List<string>> data = new List<List<string>>();
             try
             {
-                List<List<string>> data = new List<List<string>>();
                 // Conectar a la base de datos
                 Connect();
+
                 // Declare the parameter in the query string
                 using (NpgsqlCommand command = new NpgsqlCommand(pQuery, conn))
                 {
@@ -140,7 +147,6 @@ namespace PostgreSQLConnect
                         }
                     }
                 }
-                return data;
             }
             catch (Exception ex)
             {
@@ -153,6 +159,41 @@ namespace PostgreSQLConnect
                 // Desconectar de la base de datos
                 Disconnect();
             }
+            return data;
+        }
+        #endregion
+
+        #region Write methods
+
+        public int ExecuteCommand(string sql)
+        {
+            // Vars
+            int rowsAffected = 0;
+
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Preparamos la consulta
+                NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+                
+                // Realizamos la peticion
+                rowsAffected = command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+
+            return rowsAffected;
         }
         #endregion
 
@@ -161,13 +202,14 @@ namespace PostgreSQLConnect
         /// Devuelve las tablas de una base de datos
         /// </summary>
         /// <returns></returns>
-        public List<string> GetTables()
+        public IEnumerable<string> GetTables()
         {
+            List<string> data = new List<string>();
             try
             {
-                List<string> data = new List<string>();
                 // Conectar a la base de datos
                 Connect();
+
                 // Declare the parameter in the query string
                 using (NpgsqlCommand command = new NpgsqlCommand(string.Format(@"
                 SELECT table_name
@@ -185,7 +227,6 @@ namespace PostgreSQLConnect
                         }
                     }
                 }
-                return data;
             }
             catch (Exception ex)
             {
@@ -198,6 +239,7 @@ namespace PostgreSQLConnect
                 // Desconectar de la base de datos
                 Disconnect();
             }
+            return data;
         }
 
         /// <summary>
@@ -205,15 +247,15 @@ namespace PostgreSQLConnect
         /// </summary>
         /// <param name="pTable"></param>
         /// <returns></returns>
-        public List<string> GetColumnsForTable(string pTable)
+        public IEnumerable<string> GetColumnsForTable(string pTable)
         {
+            List<string> data = new List<string>();
             try
             {
-                List<string> data = new List<string>();
                 // Conectar a la base de datos
                 Connect();
-                // Declare the parameter in the query string
 
+                // Declare the parameter in the query string
                 string querySql = string.Format(@"
                 SELECT column_name
                 FROM information_schema.columns
@@ -230,7 +272,6 @@ namespace PostgreSQLConnect
                         }
                     }
                 }
-                return data;
             }
             catch (Exception ex)
             {
@@ -243,6 +284,7 @@ namespace PostgreSQLConnect
                 // Desconectar de la base de datos
                 Disconnect();
             }
+            return data;
         }
 
         /// <summary>
@@ -250,17 +292,17 @@ namespace PostgreSQLConnect
         /// </summary>
         /// <param name="pTable"></param>
         /// <returns></returns>
-        public List<string> GetColumnsAndTypesForTable(string pTable)
+        public IEnumerable<ColumnType> GetColumnsAndTypesForTable(string pTable)
         {
+            List<ColumnType> data = new List<ColumnType>();
             try
             {
-                List<string> data = new List<string>();
                 // Conectar a la base de datos
                 Connect();
-                // Declare the parameter in the query string
 
+                // Declare the parameter in the query string
                 string querySql = string.Format(@"
-                SELECT
+                SELECT column_name, 
                    CASE 
                     WHEN data_type = 'character varying' AND character_maximum_length is not null THEN
                      column_name||' '||data_type||'('||character_maximum_length||')'
@@ -278,11 +320,15 @@ namespace PostgreSQLConnect
                     {
                         while (dr.Read())
                         {
-                            data.Add(dr[0].ToString());
+                            data.Add(new ColumnType
+                            {
+                                Column = dr[0].ToString(),
+                                ColumnAndType = dr[1].ToString()
+                            });
                         }
                     }
                 }
-                return data;
+                
             }
             catch (Exception ex)
             {
@@ -295,6 +341,56 @@ namespace PostgreSQLConnect
                 // Desconectar de la base de datos
                 Disconnect();
             }
+            return data;
+        }
+
+        /// <summary>
+        /// Devuelve el numero de filas que habia la ultima vez que se realizo
+        /// un analisis de la base de datos
+        /// </summary>
+        /// <param name="pTable"></param>
+        /// <returns></returns>
+        public string GetRowsForTable(string pTable)
+        {
+            // Vars
+            string result = "0";
+
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Declare the parameter in the query string
+                string querySql = string.Format(@"
+                SELECT n_live_tup 
+                FROM pg_stat_user_tables 
+                WHERE relname = '{0}'", pTable);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result = dr[0].ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+
+            return result;
         }
         #endregion
 
