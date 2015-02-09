@@ -73,14 +73,13 @@ namespace OdooTool.Helpers
                 }
 
                 // Obtenemos todos los tipos de las columnas a seleccionar
-                IEnumerable<ColumnType> allColumnsAndTypes = manager.GetColumnsAndTypesForTable(tableOrig.TableName);
+                IEnumerable<ColumnType> allColumnsAndTypes = manager.GetColumnsAndTypesForTable(destTable.TableName);
                 // Las recorremos, si estan entre las que estamos buscando, las agregamos
-                List<string> columnsAndTypes = allColumnsAndTypes.Where(c => destTable.Columns.Contains(c.Column)).Select(columnType => columnType.ColumnAndType).OrderBy(o => o).ToList();
+                List<string> columnsAndTypes = allColumnsAndTypes.Where(c => destTable.Columns.Contains(c.Column)).OrderBy(o => o.Column).Select(columnType => columnType.ColumnAndType).ToList();
 
                 // Generamos la consulta
-                query.AppendLine(string.Format("INSERT INTO {0} (\"{1}\") SELECT \"{1}\" FROM DBLINK('{2}', 'SELECT \"{1}\" FROM {3}') AS T1 ({4})",
-                destTable.TableName, string.Join("\", \"", destTable.Columns), manager.GetConnectionStringForDbLink(),
-                tableOrig.TableName, string.Join(", ", columnsAndTypes)));
+                query.AppendLine(string.Format("INSERT INTO {0} (\"{1}\") SELECT \"{1}\" FROM DBLINK('{2}', 'SELECT \"{1}\" FROM {0}') AS T1 ({3})",
+                destTable.TableName, string.Join("\", \"", destTable.Columns.OrderBy(o => o)), manager.GetConnectionStringForDbLink(), string.Join(", ", columnsAndTypes)));
 
                 result.AppendLine(string.Format("{0} - Can be migrated", destTable.TableName));
             }
