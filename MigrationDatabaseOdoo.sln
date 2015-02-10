@@ -1,11 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{77E565B4-E5CF-4EC8-8E19-EE2BFBAD5E2D}"
 	ProjectSection(SolutionItems) = preProject
 		Libs\Npgsql.dll = Libs\Npgsql.dll
+		Libs\Telerik.WinControls.ChartView.dll = Libs\Telerik.WinControls.ChartView.dll
+		Libs\Telerik.WinControls.dll = Libs\Telerik.WinControls.dll
+		Libs\Telerik.WinControls.GridView.dll = Libs\Telerik.WinControls.GridView.dll
+		Libs\Telerik.WinControls.PdfViewer.dll = Libs\Telerik.WinControls.PdfViewer.dll
+		Libs\Telerik.WinControls.PivotGrid.dll = Libs\Telerik.WinControls.PivotGrid.dll
+		Libs\Telerik.WinControls.RadChart.dll = Libs\Telerik.WinControls.RadChart.dll
+		Libs\Telerik.WinControls.RadDock.dll = Libs\Telerik.WinControls.RadDock.dll
+		Libs\Telerik.WinControls.RadMarkupEditor.dll = Libs\Telerik.WinControls.RadMarkupEditor.dll
+		Libs\Telerik.WinControls.Scheduler.dll = Libs\Telerik.WinControls.Scheduler.dll
+		Libs\Telerik.WinControls.Themes.VisualStudio2012Light.dll = Libs\Telerik.WinControls.Themes.VisualStudio2012Light.dll
+		Libs\Telerik.WinControls.Themes.Windows8.dll = Libs\Telerik.WinControls.Themes.Windows8.dll
+		Libs\Telerik.WinControls.UI.Design.dll = Libs\Telerik.WinControls.UI.Design.dll
+		Libs\Telerik.WinControls.UI.dll = Libs\Telerik.WinControls.UI.dll
+		Libs\TelerikCommon.dll = Libs\TelerikCommon.dll
+		Libs\TelerikData.dll = Libs\TelerikData.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSQLConnect", "PostgreSQLConnect\PostgreSQLConnect.csproj", "{A02FF899-569C-48EA-9A5C-7A2AE7487677}"
