@@ -41,7 +41,7 @@ namespace PostgreSQLConnect
         #region Public Methods
 
         #region Connection methods
-        public string GetConnectionString()
+        private string GetConnectionString()
         {
             return string.Format("Server={0};Port={1};User Id={2};Password={3};Database={4};", Host, Port, User, Password, Database);
         }
@@ -63,7 +63,7 @@ namespace PostgreSQLConnect
             }
             catch (Exception ex)
             {
-                throw new PostgreSqlException("Cannot connect to PostgreSQL", ex);
+                throw new PostgreSqlException(string.Format("Cannot connect to PostgreSQL ({0})", ex.Message), ex);
             }
         }
 
@@ -78,7 +78,7 @@ namespace PostgreSQLConnect
             }
             catch (Exception ex)
             {
-                throw new PostgreSqlException("Cannot disconnect to PostgreSQL", ex);
+                throw new PostgreSqlException(string.Format("Cannot disconnect to PostgreSQL ({0})", ex.Message), ex);
             }
         }
         #endregion

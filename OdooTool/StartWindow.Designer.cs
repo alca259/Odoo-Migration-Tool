@@ -42,14 +42,16 @@
             this.treeOrig = new Telerik.WinControls.UI.RadTreeView();
             this.splitPanel6 = new Telerik.WinControls.UI.SplitPanel();
             this.btnGenerate = new Telerik.WinControls.UI.RadButton();
+            this.btnCopy = new Telerik.WinControls.UI.RadButton();
+            this.btnExecute = new Telerik.WinControls.UI.RadButton();
             this.splitPanel7 = new Telerik.WinControls.UI.SplitPanel();
             this.treeDest = new Telerik.WinControls.UI.RadTreeView();
             this.splitPanel3 = new Telerik.WinControls.UI.SplitPanel();
             this.radLabel1 = new Telerik.WinControls.UI.RadLabel();
             this.splitPanel4 = new Telerik.WinControls.UI.SplitPanel();
             this.txtResult = new Telerik.WinControls.UI.RadTextBox();
-            this.btnExecute = new Telerik.WinControls.UI.RadButton();
-            this.btnCopy = new Telerik.WinControls.UI.RadButton();
+            this.btnToggleFK = new Telerik.WinControls.UI.RadButton();
+            this.radLabel3 = new Telerik.WinControls.UI.RadLabel();
             ((System.ComponentModel.ISupportInitialize)(this.btnSetSourceServer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radSplitContainer1)).BeginInit();
             this.radSplitContainer1.SuspendLayout();
@@ -68,6 +70,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel6)).BeginInit();
             this.splitPanel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnGenerate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCopy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExecute)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel7)).BeginInit();
             this.splitPanel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeDest)).BeginInit();
@@ -77,8 +81,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel4)).BeginInit();
             this.splitPanel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtResult)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btnExecute)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btnCopy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnToggleFK)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radLabel3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -108,15 +112,15 @@
             // 
             // 
             // 
-            this.radSplitContainer1.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.radSplitContainer1.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.radSplitContainer1.Size = new System.Drawing.Size(1007, 633);
-            this.radSplitContainer1.SplitterWidth = 3;
             this.radSplitContainer1.TabIndex = 5;
             this.radSplitContainer1.TabStop = false;
             this.radSplitContainer1.ThemeName = "VisualStudio2012Light";
             // 
             // splitPanel1
             // 
+            this.splitPanel1.Controls.Add(this.btnToggleFK);
             this.splitPanel1.Controls.Add(this.loadDestinationTables);
             this.splitPanel1.Controls.Add(this.btnSetDestinationServer);
             this.splitPanel1.Controls.Add(this.loadSourceTables);
@@ -126,7 +130,7 @@
             // 
             // 
             // 
-            this.splitPanel1.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel1.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.splitPanel1.Size = new System.Drawing.Size(1007, 38);
             this.splitPanel1.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, -0.1891026F);
             this.splitPanel1.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, -109);
@@ -185,7 +189,7 @@
             // 
             // 
             // 
-            this.splitPanel2.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel2.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.splitPanel2.Size = new System.Drawing.Size(1007, 372);
             this.splitPanel2.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, 0.3461539F);
             this.splitPanel2.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, 163);
@@ -205,9 +209,8 @@
             // 
             // 
             // 
-            this.radSplitContainer2.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.radSplitContainer2.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.radSplitContainer2.Size = new System.Drawing.Size(997, 362);
-            this.radSplitContainer2.SplitterWidth = 3;
             this.radSplitContainer2.TabIndex = 0;
             this.radSplitContainer2.TabStop = false;
             this.radSplitContainer2.Text = "radSplitContainer2";
@@ -221,7 +224,7 @@
             // 
             // 
             // 
-            this.splitPanel5.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel5.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.splitPanel5.Size = new System.Drawing.Size(445, 362);
             this.splitPanel5.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0.1155378F, 0F);
             this.splitPanel5.SizeInfo.SplitterCorrection = new System.Drawing.Size(87, 0);
@@ -245,6 +248,7 @@
             // 
             // splitPanel6
             // 
+            this.splitPanel6.Controls.Add(this.radLabel3);
             this.splitPanel6.Controls.Add(this.btnGenerate);
             this.splitPanel6.Controls.Add(this.btnCopy);
             this.splitPanel6.Controls.Add(this.btnExecute);
@@ -253,7 +257,7 @@
             // 
             // 
             // 
-            this.splitPanel6.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel6.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.splitPanel6.Size = new System.Drawing.Size(91, 362);
             this.splitPanel6.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(-0.2416999F, 0F);
             this.splitPanel6.SizeInfo.SplitterCorrection = new System.Drawing.Size(-182, 0);
@@ -278,6 +282,38 @@
             this.btnGenerate.ThemeName = "VisualStudio2012Light";
             this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
             // 
+            // btnCopy
+            // 
+            this.btnCopy.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
+            this.btnCopy.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnCopy.Enabled = false;
+            this.btnCopy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCopy.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnCopy.Location = new System.Drawing.Point(0, 272);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(91, 45);
+            this.btnCopy.TabIndex = 6;
+            this.btnCopy.Text = "Copy SQL";
+            this.btnCopy.TextWrap = true;
+            this.btnCopy.ThemeName = "VisualStudio2012Light";
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+            // 
+            // btnExecute
+            // 
+            this.btnExecute.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
+            this.btnExecute.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnExecute.Enabled = false;
+            this.btnExecute.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExecute.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnExecute.Location = new System.Drawing.Point(0, 317);
+            this.btnExecute.Name = "btnExecute";
+            this.btnExecute.Size = new System.Drawing.Size(91, 45);
+            this.btnExecute.TabIndex = 5;
+            this.btnExecute.Text = "Execute Migration";
+            this.btnExecute.TextWrap = true;
+            this.btnExecute.ThemeName = "VisualStudio2012Light";
+            this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
+            // 
             // splitPanel7
             // 
             this.splitPanel7.Controls.Add(this.treeDest);
@@ -286,7 +322,7 @@
             // 
             // 
             // 
-            this.splitPanel7.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel7.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.splitPanel7.Size = new System.Drawing.Size(455, 362);
             this.splitPanel7.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0.126162F, 0F);
             this.splitPanel7.SizeInfo.SplitterCorrection = new System.Drawing.Size(95, 0);
@@ -317,7 +353,7 @@
             // 
             // 
             // 
-            this.splitPanel3.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel3.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.splitPanel3.Size = new System.Drawing.Size(1007, 27);
             this.splitPanel3.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, -0.2067308F);
             this.splitPanel3.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, -86);
@@ -345,7 +381,7 @@
             // 
             // 
             // 
-            this.splitPanel4.RootElement.MinSize = new System.Drawing.Size(0, 0);
+            this.splitPanel4.RootElement.MinSize = new System.Drawing.Size(25, 25);
             this.splitPanel4.Size = new System.Drawing.Size(1007, 187);
             this.splitPanel4.SizeInfo.AutoSizeScale = new System.Drawing.SizeF(0F, 0.04967949F);
             this.splitPanel4.SizeInfo.SplitterCorrection = new System.Drawing.Size(0, 32);
@@ -365,37 +401,31 @@
             this.txtResult.Size = new System.Drawing.Size(1007, 187);
             this.txtResult.TabIndex = 0;
             // 
-            // btnExecute
+            // btnToggleFK
             // 
-            this.btnExecute.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
-            this.btnExecute.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnExecute.Enabled = false;
-            this.btnExecute.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnExecute.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            this.btnExecute.Location = new System.Drawing.Point(0, 317);
-            this.btnExecute.Name = "btnExecute";
-            this.btnExecute.Size = new System.Drawing.Size(91, 45);
-            this.btnExecute.TabIndex = 5;
-            this.btnExecute.Text = "Execute Migration";
-            this.btnExecute.TextWrap = true;
-            this.btnExecute.ThemeName = "VisualStudio2012Light";
-            this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
+            this.btnToggleFK.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
+            this.btnToggleFK.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnToggleFK.Enabled = false;
+            this.btnToggleFK.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnToggleFK.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnToggleFK.Location = new System.Drawing.Point(650, 0);
+            this.btnToggleFK.Name = "btnToggleFK";
+            this.btnToggleFK.Size = new System.Drawing.Size(157, 38);
+            this.btnToggleFK.TabIndex = 6;
+            this.btnToggleFK.Text = "Toggle FK (Enabled)";
+            this.btnToggleFK.ThemeName = "VisualStudio2012Light";
             // 
-            // btnCopy
+            // radLabel3
             // 
-            this.btnCopy.DisplayStyle = Telerik.WinControls.DisplayStyle.Text;
-            this.btnCopy.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnCopy.Enabled = false;
-            this.btnCopy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnCopy.ImageAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            this.btnCopy.Location = new System.Drawing.Point(0, 272);
-            this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(91, 45);
-            this.btnCopy.TabIndex = 6;
-            this.btnCopy.Text = "Copy SQL";
-            this.btnCopy.TextWrap = true;
-            this.btnCopy.ThemeName = "VisualStudio2012Light";
-            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+            this.radLabel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.radLabel3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Italic);
+            this.radLabel3.Location = new System.Drawing.Point(0, 204);
+            this.radLabel3.Name = "radLabel3";
+            this.radLabel3.Size = new System.Drawing.Size(96, 23);
+            this.radLabel3.TabIndex = 7;
+            this.radLabel3.Text = "------------->";
+            this.radLabel3.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.radLabel3.ThemeName = "VisualStudio2012Light";
             // 
             // StartWindow
             // 
@@ -430,7 +460,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.treeOrig)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel6)).EndInit();
             this.splitPanel6.ResumeLayout(false);
+            this.splitPanel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnGenerate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCopy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExecute)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel7)).EndInit();
             this.splitPanel7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.treeDest)).EndInit();
@@ -441,8 +474,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel4)).EndInit();
             this.splitPanel4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.txtResult)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btnExecute)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btnCopy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnToggleFK)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radLabel3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
@@ -471,6 +504,8 @@
         private Telerik.WinControls.UI.RadButton btnGenerate;
         private Telerik.WinControls.UI.RadButton btnExecute;
         private Telerik.WinControls.UI.RadButton btnCopy;
+        private Telerik.WinControls.UI.RadButton btnToggleFK;
+        private Telerik.WinControls.UI.RadLabel radLabel3;
 
     }
 }
