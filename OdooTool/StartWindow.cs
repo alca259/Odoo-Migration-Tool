@@ -13,8 +13,11 @@ namespace OdooTool
 {
     public partial class StartWindow : RadForm
     {
+        #region Properties
         private QueryResult result { get; set; }
+        #endregion
 
+        #region Constructor
         public StartWindow()
         {
             InitializeComponent();
@@ -22,18 +25,28 @@ namespace OdooTool
             result = new QueryResult();
             RadMessageBox.SetThemeName("VisualStudio2012Light");
         }
+        #endregion
 
-        private void loadSourceTables_Click(object sender, System.EventArgs e)
+        #region Private methods
+
+        private void LoadTable(bool isDestination)
         {
             try
             {
                 // Obtenemos la configuracion
-                SettingsModel model = SettingsManager.GetXml();
+                SettingsModel model = SettingsManager.GetXml(isDestination);
                 if (model == null)
                     return;
 
                 // Limpiamos el arbol
-                treeOrig.Nodes.Clear();
+                if (isDestination)
+                {
+                    treeDest.Nodes.Clear();
+                }
+                else
+                {
+                    treeOrig.Nodes.Clear();
+                }
 
                 // Inicializamos el manager
                 DatabaseManage manager = new DatabaseManage(model);
@@ -46,7 +59,9 @@ namespace OdooTool
                     string numRows = manager.GetRowsForTable(table);
 
                     // Agregamos la tabla al arbol
-                    RadTreeNode tableNode = treeOrig.Nodes.Add(table, string.Format("{0} ({1})", table, numRows), "");
+                    RadTreeNode tableNode = isDestination ?
+                        treeDest.Nodes.Add(table, string.Format("{0} ({1})", table, numRows), "") :
+                        treeOrig.Nodes.Add(table, string.Format("{0} ({1})", table, numRows), "");
 
                     // Obtenemos las columnas de la tabla
                     IEnumerable<string> columns = manager.GetColumnsForTable(table);
@@ -63,37 +78,49 @@ namespace OdooTool
             }
         }
 
-        private void loadDestinationTables_Click(object sender, System.EventArgs e)
+        private void DisplayMessage(string message)
         {
-            try 
-            { 
-                // Obtenemos la configuracion
-                SettingsModel model = SettingsManager.GetXml(true);
-                if (model == null)
-                    return;
+            RadMessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, RadMessageIcon.Exclamation,
+                MessageBoxDefaultButton.Button1);
+        }
 
-                // Limpiamos el arbol
-                treeDest.Nodes.Clear();
+        private List<TableModel> GetSelectedNodes(bool isDestination)
+        {
+            List<TableModel> tableList = new List<TableModel>();
 
-                // Inicializamos el manager
-                DatabaseManage manager = new DatabaseManage(model);
+            try
+            {
+                var tree = isDestination ? treeDest : treeOrig;
 
-                // Obtenemos las tablas
-                IEnumerable<string> tables = manager.GetTables();
-                foreach (string table in tables)
+                // Creamos la lista de origen
+                foreach (RadTreeNode node in tree.Nodes)
                 {
-                    // Buscamos el numero de filas
-                    string numRows = manager.GetRowsForTable(table);
-
-                    // Agregamos la tabla al arbol
-                    RadTreeNode tableNode = treeDest.Nodes.Add(table, string.Format("{0} ({1})", table, numRows), "");
-
-                    // Obtenemos las columnas de la tabla
-                    IEnumerable<string> columns = manager.GetColumnsForTable(table);
-                    foreach (string column in columns)
+                    switch (node.CheckState)
                     {
-                        // Agregamos la columna al nodo de la tabla
-                        tableNode.Nodes.Add(column);
+                        case ToggleState.On:
+                            // Add table and all columns
+                            tableList.Add(new TableModel
+                            {
+                                TableName = node.Name,
+                                Columns = node.Nodes
+                                    .Select(column => column.Name)
+                                    .ToList()
+                            });
+                            break;
+                        case ToggleState.Indeterminate:
+                            // Check all columns of this table
+                            tableList.Add(new TableModel
+                            {
+                                TableName = node.Name,
+                                Columns = node.Nodes
+                                    .Where(w => w.CheckState == ToggleState.On)
+                                    .Select(column => column.Name)
+                                    .ToList()
+                            });
+                            break;
+                        case ToggleState.Off:
+                            // Ignoring
+                            break;
                     }
                 }
             }
@@ -101,6 +128,73 @@ namespace OdooTool
             {
                 DisplayMessage(ex.Message);
             }
+
+            return tableList;
+        }
+
+        private void CheckUncheckOrig(RadTreeNode currentNode)
+        {
+            RadTreeNode foundNode;
+            RadTreeNode currentParentNode;
+
+            // Determinar si el nodo actual es un campo o una tabla
+            if (currentNode.Parent == null)
+            {
+                // Tabla
+                // Buscamos la tabla en los nodos del arbol de origen
+                foundNode = treeOrig.Nodes.SingleOrDefault(a => a.Name.ToLower() == currentNode.Name.ToLower());
+                currentParentNode = currentNode;
+            }
+            else
+            {
+                // Campo
+                foundNode = treeOrig.Nodes.SingleOrDefault(a => a.Name.ToLower() == currentNode.Parent.Name.ToLower());
+                currentParentNode = currentNode.Parent;
+            }
+
+            if (foundNode == null)
+                return;
+
+            switch (currentParentNode.CheckState)
+            {
+                case ToggleState.On:
+                    // Add table and all columns
+                    foundNode.CheckState = ToggleState.On;
+                    foreach (RadTreeNode childFoundNode in foundNode.Nodes)
+                    {
+                        childFoundNode.CheckState = ToggleState.On;
+                    }
+                    break;
+                case ToggleState.Indeterminate:
+                    // Check only column of current node
+                    // Looking for child on found node
+                    foreach (RadTreeNode childFoundNode in foundNode.Nodes.Where(childFoundNode => currentNode.Name.ToLower() == childFoundNode.Name.ToLower()))
+                    {
+                        childFoundNode.CheckState = currentNode.CheckState;
+                    }
+                    break;
+                case ToggleState.Off:
+                    // Remove table and all columns
+                    foundNode.CheckState = ToggleState.Off;
+                    foreach (RadTreeNode childFoundNode in foundNode.Nodes)
+                    {
+                        childFoundNode.CheckState = ToggleState.Off;
+                    }
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Event methods
+        private void loadSourceTables_Click(object sender, System.EventArgs e)
+        {
+            LoadTable(false);
+        }
+
+        private void loadDestinationTables_Click(object sender, System.EventArgs e)
+        {
+            LoadTable(true);
         }
 
         private void btnSetSourceServer_Click(object sender, System.EventArgs e)
@@ -117,84 +211,13 @@ namespace OdooTool
 
         private void btnGenerate_Click(object sender, System.EventArgs e)
         {
-            try
-            {
-                List<TableModel> tableListOrig = new List<TableModel>();
-                List<TableModel> tableListDest = new List<TableModel>();
+            List<TableModel> tableListOrig = GetSelectedNodes(false);
+            List<TableModel> tableListDest = GetSelectedNodes(true);
 
-                // Creamos la lista de origen
-                foreach (RadTreeNode node in treeOrig.Nodes)
-                {
-                    switch (node.CheckState)
-                    {
-                        case ToggleState.On:
-                            // Add table and all columns
-                            tableListOrig.Add(new TableModel
-                            {
-                                TableName = node.Name,
-                                Columns = node.Nodes
-                                    .Select(column => column.Name)
-                                    .ToList()
-                            });
-                            break;
-                        case ToggleState.Indeterminate:
-                            // Check all columns of this table
-                            tableListOrig.Add(new TableModel
-                            {
-                                TableName = node.Name,
-                                Columns = node.Nodes
-                                    .Where(w => w.CheckState == ToggleState.On)
-                                    .Select(column => column.Name)
-                                    .ToList()
-                            });
-                            break;
-                        case ToggleState.Off:
-                            // Ignoring
-                            break;
-                    }
-                }
-
-                // Creamos la lista de destino
-                foreach (RadTreeNode node in treeDest.Nodes)
-                {
-                    switch (node.CheckState)
-                    {
-                        case ToggleState.On:
-                            // Add table and all columns
-                            tableListDest.Add(new TableModel
-                            {
-                                TableName = node.Name,
-                                Columns = node.Nodes
-                                    .Select(column => column.Name)
-                                    .ToList()
-                            });
-                            break;
-                        case ToggleState.Indeterminate:
-                            // Check all columns of this table
-                            tableListDest.Add(new TableModel
-                            {
-                                TableName = node.Name,
-                                Columns = node.Nodes
-                                    .Where(w => w.CheckState == ToggleState.On)
-                                    .Select(column => column.Name)
-                                    .ToList()
-                            });
-                            break;
-                        case ToggleState.Off:
-                            // Ignoring
-                            break;
-                    }
-                }
-
-                result = Migrator.Generate(tableListOrig, tableListDest);
-                btnExecute.Enabled = result.CanBeExecuted;
-                btnCopy.Enabled = result.CanBeExecuted;
-                txtResult.Text = result.Results.ToString();
-            }
-            catch (Exception ex)
-            {
-                DisplayMessage(ex.Message);
-            }
+            result = Migrator.Generate(tableListOrig, tableListDest);
+            btnExecute.Enabled = result.CanBeExecuted;
+            btnCopy.Enabled = result.CanBeExecuted;
+            txtResult.Text = result.Results.ToString();
         }
 
         private void btnExecute_Click(object sender, System.EventArgs e)
@@ -222,17 +245,14 @@ namespace OdooTool
             result.CanBeExecuted = false;
             btnExecute.Enabled = false;
             btnCopy.Enabled = false;
-        }
 
-        private void DisplayMessage(string message)
-        {
-            RadMessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, RadMessageIcon.Exclamation,
-                MessageBoxDefaultButton.Button1);
+            CheckUncheckOrig(e.Node);
         }
 
         private void btnCopy_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(result.Querys.ToString());
         }
+        #endregion
     }
 }

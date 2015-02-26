@@ -87,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\Migrator.cs" />
+    <Compile Include="Helpers\RadReadOnlyTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Helpers\SettingsManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -129,6 +132,7 @@
   <ItemGroup>
     <Content Include="Images\Icon.ico" />
     <Content Include="Images\tool-icon.png" />
+    <Content Include="Images\ToRight.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
