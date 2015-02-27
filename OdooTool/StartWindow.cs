@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using OdooTool.Helpers;
 using PostgreSQLConnect;
@@ -15,6 +17,7 @@ namespace OdooTool
     {
         #region Properties
         private QueryResult result { get; set; }
+        private bool isProcessRunning = false;
         #endregion
 
         #region Constructor
@@ -214,7 +217,8 @@ namespace OdooTool
             List<TableModel> tableListOrig = GetSelectedNodes(false);
             List<TableModel> tableListDest = GetSelectedNodes(true);
 
-            result = Migrator.Generate(tableListOrig, tableListDest);
+            // Send info about disable or not constraints
+            result = Migrator.Generate(tableListOrig, tableListDest, checkDisableConstraints.IsChecked);
             btnExecute.Enabled = result.CanBeExecuted;
             btnCopy.Enabled = result.CanBeExecuted;
             txtResult.Text = result.Results.ToString();
@@ -225,19 +229,42 @@ namespace OdooTool
             try
             {
                 if (!result.CanBeExecuted) return;
-                txtResult.Text = Migrator.ExecuteQuerys(result.Querys);
+
+                if (isProcessRunning)
+                {
+                    throw new Exception("A process is already running.");
+                }
+
+                btnExecute.Enabled = false;
+
+                Thread backgroundThread = new Thread(() =>
+                {
+                    isProcessRunning = true;
+                    string resultado = Migrator.ExecuteQuerys(result, progressBarResult);
+
+                    txtResult.BeginInvoke(new Action(() =>
+                    {
+                        txtResult.Text = resultado;
+                    }));
+
+                    progressBarResult.BeginInvoke(new Action(() =>
+                    {
+                        progressBarResult.Value1 = 0;
+                    }));
+
+                    btnExecute.BeginInvoke(new Action(() =>
+                    {
+                        btnExecute.Enabled = true;
+                    }));
+
+                    isProcessRunning = false;
+                });
+                backgroundThread.Start();
             }
             catch (Exception ex)
             {
                 DisplayMessage(ex.Message);
             }
-        }
-
-        private void treeOrig_NodeCheckedChanged(object sender, TreeNodeCheckedEventArgs e)
-        {
-            result.CanBeExecuted = false;
-            btnExecute.Enabled = false;
-            btnCopy.Enabled = false;
         }
 
         private void treeDest_NodeCheckedChanged(object sender, TreeNodeCheckedEventArgs e)
@@ -251,7 +278,14 @@ namespace OdooTool
 
         private void btnCopy_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(result.Querys.ToString());
+            if (!result.DisableConstraints)
+            {
+                Clipboard.SetText(result.Querys.ToString());
+            }
+            else
+            {
+                Clipboard.SetText(result.QuerysDisableConstraints.ToString() + result.Querys.ToString() + result.QuerysEnableConstraints.ToString());
+            }
         }
         #endregion
     }

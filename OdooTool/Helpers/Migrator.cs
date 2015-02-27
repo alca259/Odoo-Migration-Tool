@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using PostgreSQLConnect;
 using PostgreSQLConnect.Models;
+using Telerik.WinControls.UI;
 
 namespace OdooTool.Helpers
 {
@@ -13,11 +14,13 @@ namespace OdooTool.Helpers
     /// </summary>
     public static class Migrator
     {
-        public static QueryResult Generate(List<TableModel> orig, List<TableModel> dest)
+        public static QueryResult Generate(List<TableModel> orig, List<TableModel> dest, bool disableConstraints)
         {
             QueryResult tablesResults = new QueryResult {CanBeExecuted = true};
             StringBuilder query = new StringBuilder();
             StringBuilder result = new StringBuilder();
+            StringBuilder disableConstraintsQuery = new StringBuilder();
+            StringBuilder enableConstraintsQuery = new StringBuilder();
 
             if (!orig.Any() || !dest.Any())
             {
@@ -72,6 +75,13 @@ namespace OdooTool.Helpers
                     continue;
                 }
 
+                // Generamos los comandos para des/habilitar las constraints, si asi se requiere
+                if (disableConstraints)
+                {
+                    disableConstraintsQuery.AppendLine(string.Format("ALTER TABLE IF EXISTS {0} DISABLE TRIGGER ALL", destTable.TableName));
+                    enableConstraintsQuery.AppendLine(string.Format("ALTER TABLE IF EXISTS {0} ENABLE TRIGGER ALL", destTable.TableName));
+                }
+
                 // Obtenemos todos los tipos de las columnas a seleccionar
                 IEnumerable<ColumnType> allColumnsAndTypes = manager.GetColumnsAndTypesForTable(destTable.TableName);
                 // Las recorremos, si estan entre las que estamos buscando, las agregamos
@@ -82,14 +92,18 @@ namespace OdooTool.Helpers
                 destTable.TableName, string.Join("\", \"", destTable.Columns.OrderBy(o => o)), manager.GetConnectionStringForDbLink(), string.Join(", ", columnsAndTypes)));
 
                 result.AppendLine(string.Format("{0} - Can be migrated", destTable.TableName));
+                tablesResults.NumberOfTables++;
             }
 
             tablesResults.Querys = query;
             tablesResults.Results = result;
+            tablesResults.DisableConstraints = disableConstraints;
+            tablesResults.QuerysDisableConstraints = disableConstraintsQuery;
+            tablesResults.QuerysEnableConstraints = enableConstraintsQuery;
             return tablesResults;
         }
 
-        public static string ExecuteQuerys(StringBuilder querys)
+        public static string ExecuteQuerys(QueryResult result, RadProgressBar progressBarResult)
         {
             StringBuilder results = new StringBuilder();
 
@@ -104,7 +118,33 @@ namespace OdooTool.Helpers
             // Inicializamos el manager
             DatabaseManage manager = new DatabaseManage(model);
 
-            foreach (string query in querys.ToString().Split('\n'))
+            // Si tenemos que deshabilitar constraints
+            if (result.DisableConstraints)
+            {
+                foreach (string query in result.QuerysDisableConstraints.ToString().Split('\n'))
+                {
+                    if (string.IsNullOrWhiteSpace(query)) continue;
+
+                    int startCut = query.IndexOf("EXISTS", StringComparison.Ordinal) + 7;
+                    int lengthCut = query.IndexOf("DISABLE", StringComparison.Ordinal) - startCut - 1;
+
+                    string tableName = query.Substring(startCut, lengthCut);
+
+                    try
+                    {
+                        manager.ExecuteCommand(query);
+                        results.AppendLine(string.Format("Disabling constraints for table {0} - Disabled", tableName));
+                    }
+                    catch (Exception ex)
+                    {
+                        results.AppendLine(string.Format("Disabling constraints for table {0} - Cannot be disabled - Error: {1}", tableName, ex.Message));
+                    }
+                }
+            }
+
+            int currentNumberTable = 0;
+
+            foreach (string query in result.Querys.ToString().Split('\n'))
             {
                 if (string.IsNullOrWhiteSpace(query)) continue;
 
@@ -122,6 +162,38 @@ namespace OdooTool.Helpers
                 catch (Exception ex)
                 {
                     results.AppendLine(string.Format("{0} - Migrated Error - Rows inserted: {1} - Error: {2}", tableName, rowsAffected, ex.Message));
+                }
+
+                currentNumberTable++;
+
+                int table = currentNumberTable;
+                progressBarResult.BeginInvoke(new Action(() =>
+                {
+                    progressBarResult.Value1 = (int)(((float)table / result.NumberOfTables) * 100);
+                }));
+            }
+
+            // Si tenemos que habilitar constraints
+            if (result.DisableConstraints)
+            {
+                foreach (string query in result.QuerysEnableConstraints.ToString().Split('\n'))
+                {
+                    if (string.IsNullOrWhiteSpace(query)) continue;
+
+                    int startCut = query.IndexOf("EXISTS", StringComparison.Ordinal) + 7;
+                    int lengthCut = query.IndexOf("ENABLE", StringComparison.Ordinal) - startCut - 1;
+
+                    string tableName = query.Substring(startCut, lengthCut);
+
+                    try
+                    {
+                        manager.ExecuteCommand(query);
+                        results.AppendLine(string.Format("Enabling constraints for table {0} - Enabled", tableName));
+                    }
+                    catch (Exception ex)
+                    {
+                        results.AppendLine(string.Format("Enabling constraints for table {0} - Cannot be enabled - Error: {1}", tableName, ex.Message));
+                    }
                 }
             }
 

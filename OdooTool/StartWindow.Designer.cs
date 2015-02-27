@@ -497,7 +497,6 @@
             this.treeOrig.Text = "radTreeView1";
             this.treeOrig.ThemeName = "VisualStudio2012Light";
             this.treeOrig.TriStateMode = true;
-            this.treeOrig.NodeCheckedChanged += new Telerik.WinControls.UI.TreeNodeCheckedEventHandler(this.treeOrig_NodeCheckedChanged);
             // 
             // StartWindow
             // 
