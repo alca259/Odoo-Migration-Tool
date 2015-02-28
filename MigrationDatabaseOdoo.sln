@@ -6,26 +6,26 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{77E565B4-E5CF-4EC8-8E19-EE2BFBAD5E2D}"
 	ProjectSection(SolutionItems) = preProject
 		Libs\Npgsql.dll = Libs\Npgsql.dll
-		Libs\Telerik.WinControls.ChartView.dll = Libs\Telerik.WinControls.ChartView.dll
-		Libs\Telerik.WinControls.dll = Libs\Telerik.WinControls.dll
-		Libs\Telerik.WinControls.GridView.dll = Libs\Telerik.WinControls.GridView.dll
-		Libs\Telerik.WinControls.PdfViewer.dll = Libs\Telerik.WinControls.PdfViewer.dll
-		Libs\Telerik.WinControls.PivotGrid.dll = Libs\Telerik.WinControls.PivotGrid.dll
-		Libs\Telerik.WinControls.RadChart.dll = Libs\Telerik.WinControls.RadChart.dll
-		Libs\Telerik.WinControls.RadDock.dll = Libs\Telerik.WinControls.RadDock.dll
-		Libs\Telerik.WinControls.RadMarkupEditor.dll = Libs\Telerik.WinControls.RadMarkupEditor.dll
-		Libs\Telerik.WinControls.Scheduler.dll = Libs\Telerik.WinControls.Scheduler.dll
-		Libs\Telerik.WinControls.Themes.VisualStudio2012Light.dll = Libs\Telerik.WinControls.Themes.VisualStudio2012Light.dll
-		Libs\Telerik.WinControls.Themes.Windows8.dll = Libs\Telerik.WinControls.Themes.Windows8.dll
-		Libs\Telerik.WinControls.UI.Design.dll = Libs\Telerik.WinControls.UI.Design.dll
-		Libs\Telerik.WinControls.UI.dll = Libs\Telerik.WinControls.UI.dll
-		Libs\TelerikCommon.dll = Libs\TelerikCommon.dll
-		Libs\TelerikData.dll = Libs\TelerikData.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSQLConnect", "PostgreSQLConnect\PostgreSQLConnect.csproj", "{A02FF899-569C-48EA-9A5C-7A2AE7487677}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OdooTool", "OdooTool\OdooTool.csproj", "{E55E7FA8-1305-457B-A35C-5C2DA1C45215}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{2CB863AB-2F35-4FCD-8ACB-2E048BA198AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RCWF", "RCWF", "{05DD7F44-6EB8-4B92-8A59-D4E103EBA6FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2014.3.1202.40", "2014.3.1202.40", "{925720EA-F53D-49DA-BE41-3F9CC185E6C1}"
+	ProjectSection(SolutionItems) = preProject
+		lib\RCWF\2014.3.1202.40\Telerik.WinControls.dll = lib\RCWF\2014.3.1202.40\Telerik.WinControls.dll
+		lib\RCWF\2014.3.1202.40\Telerik.WinControls.GridView.dll = lib\RCWF\2014.3.1202.40\Telerik.WinControls.GridView.dll
+		lib\RCWF\2014.3.1202.40\Telerik.WinControls.Themes.VisualStudio2012Light.dll = lib\RCWF\2014.3.1202.40\Telerik.WinControls.Themes.VisualStudio2012Light.dll
+		lib\RCWF\2014.3.1202.40\Telerik.WinControls.UI.Design.dll = lib\RCWF\2014.3.1202.40\Telerik.WinControls.UI.Design.dll
+		lib\RCWF\2014.3.1202.40\Telerik.WinControls.UI.dll = lib\RCWF\2014.3.1202.40\Telerik.WinControls.UI.dll
+		lib\RCWF\2014.3.1202.40\TelerikCommon.dll = lib\RCWF\2014.3.1202.40\TelerikCommon.dll
+		lib\RCWF\2014.3.1202.40\TelerikData.dll = lib\RCWF\2014.3.1202.40\TelerikData.dll
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,5 +44,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{05DD7F44-6EB8-4B92-8A59-D4E103EBA6FB} = {2CB863AB-2F35-4FCD-8ACB-2E048BA198AC}
+		{925720EA-F53D-49DA-BE41-3F9CC185E6C1} = {05DD7F44-6EB8-4B92-8A59-D4E103EBA6FB}
 	EndGlobalSection
 EndGlobal

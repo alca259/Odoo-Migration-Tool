@@ -343,6 +343,8 @@ namespace OdooTool.Helpers
             int currentNumberRow = 0;
             int rowsAffected = 0;
 
+            results.AppendLine(string.Format("{0} - Starting migration", GetTime()));
+
             foreach (string query in querys.Querys.ToString().Split('\n'))
             {
                 if (string.IsNullOrWhiteSpace(query)) continue;
