@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -26,7 +27,10 @@ namespace OdooTool
             InitializeComponent();
             SettingsManager.Initialize();
             RadMessageBox.SetThemeName("VisualStudio2012Light");
+            saveFileDialog1.FileOk += saveFileDialog1_FileOk;
         }
+
+
         #endregion
 
         #region Private methods
@@ -337,6 +341,19 @@ namespace OdooTool
         private void btnClear_Click(object sender, EventArgs e)
         {
             txtResult.Text = string.Empty;
+        }
+
+        private void btnSaveSQL_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.ShowDialog();
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            // Get file name.
+            string name = saveFileDialog1.FileName;
+            // Write to the file name selected.
+            File.WriteAllText(name, string.Join(";", GetSelectedNodes().Querys.ToString().Split('\n')));
         }
 
         #endregion

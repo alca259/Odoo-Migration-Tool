@@ -153,6 +153,7 @@
   <ItemGroup>
     <Content Include="Icon.ico" />
     <Content Include="Images\clear-icon.png" />
+    <Content Include="Images\copy-icon.png" />
     <Content Include="Images\disable-icon.png" />
     <Content Include="Images\enable-icon.png" />
     <Content Include="Images\Icon.ico" />
