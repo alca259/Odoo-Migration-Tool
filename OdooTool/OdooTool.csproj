@@ -101,11 +101,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SelectionMode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectionMode.Designer.cs">
+      <DependentUpon>SelectionMode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SingleWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SingleWindow.Designer.cs">
+      <DependentUpon>SingleWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="StartWindow.cs">
       <SubType>Form</SubType>
@@ -119,8 +131,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="SelectionMode.resx">
+      <DependentUpon>SelectionMode.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SingleWindow.resx">
+      <DependentUpon>SingleWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StartWindow.resx">
       <DependentUpon>StartWindow.cs</DependentUpon>

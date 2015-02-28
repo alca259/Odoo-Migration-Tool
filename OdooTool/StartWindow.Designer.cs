@@ -41,6 +41,7 @@
             this.TablesPanel = new Telerik.WinControls.UI.SplitPanel();
             this.radSplitContainer2 = new Telerik.WinControls.UI.RadSplitContainer();
             this.splitPanel5 = new Telerik.WinControls.UI.SplitPanel();
+            this.treeOrig = new OdooTool.Helpers.RadReadOnlyTreeView();
             this.splitPanel6 = new Telerik.WinControls.UI.SplitPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnGenerate = new Telerik.WinControls.UI.RadButton();
@@ -54,7 +55,6 @@
             this.txtResult = new Telerik.WinControls.UI.RadTextBox();
             this.ProgressPanel = new Telerik.WinControls.UI.SplitPanel();
             this.progressBarResult = new Telerik.WinControls.UI.RadProgressBar();
-            this.treeOrig = new OdooTool.Helpers.RadReadOnlyTreeView();
             ((System.ComponentModel.ISupportInitialize)(this.btnSetSourceServer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radSplitContainer1)).BeginInit();
             this.radSplitContainer1.SuspendLayout();
@@ -72,6 +72,7 @@
             this.radSplitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel5)).BeginInit();
             this.splitPanel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.treeOrig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel6)).BeginInit();
             this.splitPanel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -90,7 +91,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ProgressPanel)).BeginInit();
             this.ProgressPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarResult)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.treeOrig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -272,6 +272,19 @@
             this.splitPanel5.TabStop = false;
             this.splitPanel5.Text = "splitPanel5";
             this.splitPanel5.ThemeName = "VisualStudio2012Light";
+            // 
+            // treeOrig
+            // 
+            this.treeOrig.CheckBoxes = true;
+            this.treeOrig.CheckBoxReadOnly = true;
+            this.treeOrig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeOrig.Location = new System.Drawing.Point(0, 0);
+            this.treeOrig.Name = "treeOrig";
+            this.treeOrig.Size = new System.Drawing.Size(446, 351);
+            this.treeOrig.TabIndex = 5;
+            this.treeOrig.Text = "radTreeView1";
+            this.treeOrig.ThemeName = "VisualStudio2012Light";
+            this.treeOrig.TriStateMode = true;
             // 
             // splitPanel6
             // 
@@ -485,19 +498,6 @@
             this.progressBarResult.Text = "0 %";
             this.progressBarResult.ThemeName = "VisualStudio2012Light";
             // 
-            // treeOrig
-            // 
-            this.treeOrig.CheckBoxes = true;
-            this.treeOrig.CheckBoxReadOnly = true;
-            this.treeOrig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeOrig.Location = new System.Drawing.Point(0, 0);
-            this.treeOrig.Name = "treeOrig";
-            this.treeOrig.Size = new System.Drawing.Size(446, 351);
-            this.treeOrig.TabIndex = 5;
-            this.treeOrig.Text = "radTreeView1";
-            this.treeOrig.ThemeName = "VisualStudio2012Light";
-            this.treeOrig.TriStateMode = true;
-            // 
             // StartWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -510,6 +510,7 @@
             // 
             // 
             this.RootElement.ApplyShapeToControl = true;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Migration Tool PostgreSQL - Optimized for Odoo";
             this.ThemeName = "VisualStudio2012Light";
             ((System.ComponentModel.ISupportInitialize)(this.btnSetSourceServer)).EndInit();
@@ -530,6 +531,7 @@
             this.radSplitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel5)).EndInit();
             this.splitPanel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.treeOrig)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel6)).EndInit();
             this.splitPanel6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -549,7 +551,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ProgressPanel)).EndInit();
             this.ProgressPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.progressBarResult)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.treeOrig)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
