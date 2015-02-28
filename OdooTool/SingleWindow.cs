@@ -110,15 +110,15 @@ namespace OdooTool
                 // Inicializamos el manager de destino
                 DatabaseManage managerDest = new DatabaseManage(modelDest);
 
-                List<string> listColumns = new List<string>();
+                List<ColumnData> listColumns = new List<ColumnData>();
 
                 // Obtenemos las columnas de la tabla de origen
-                IEnumerable<string> columns = manager.GetColumnsForTable(pTableName);
-                foreach (string column in columns)
+                IEnumerable<ColumnData> columns = manager.GetColumnsTypesInfoForTable(pTableName);
+                foreach (ColumnData column in columns)
                 {
                     // Buscamos la columna en la base de datos de destino,
                     // si no existe, no la guardaremos
-                    if (!managerDest.GetColumnWithNameForTable(pTableName, column)) continue;
+                    if (!managerDest.GetColumnWithNameForTable(pTableName, column.ColumnName)) continue;
 
                     // Agregamos la columna al listado
                     listColumns.Add(column);

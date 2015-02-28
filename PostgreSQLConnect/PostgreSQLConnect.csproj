@@ -53,7 +53,9 @@
   <ItemGroup>
     <Compile Include="DatabaseManage.cs" />
     <Compile Include="Exceptions\PostgreSqlException.cs" />
+    <Compile Include="Models\ColumnData.cs" />
     <Compile Include="Models\ColumnType.cs" />
+    <Compile Include="Models\EnumTypeColumn.cs" />
     <Compile Include="Models\FieldResult.cs" />
     <Compile Include="Models\QueryResult.cs" />
     <Compile Include="Models\RowModel.cs" />

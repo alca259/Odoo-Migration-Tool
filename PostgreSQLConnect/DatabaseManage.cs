@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Npgsql;
 using PostgreSQLConnect.Exceptions;
 using PostgreSQLConnect.Models;
@@ -120,10 +121,12 @@ namespace PostgreSQLConnect
         /// Ejecuta una consulta y devuelve una lista de objetos
         /// </summary>
         /// <param name="pQuery">String query</param>
+        /// <param name="pValidColumns">String query</param>
         /// <returns>Lista de objetos</returns>
-        public List<RowModel> ExecuteQueryList(string pQuery)
+        public List<RowModel> ExecuteQueryList(string pQuery, List<ColumnData> pValidColumns)
         {
             List<RowModel> data = new List<RowModel>();
+            pValidColumns = pValidColumns.OrderBy(o => o.ColumnName).ToList();
             try
             {
                 // Conectar a la base de datos
@@ -140,7 +143,38 @@ namespace PostgreSQLConnect
 
                             for (int i = 0; i < dr.FieldCount; i++)
                             {
-                                fieldData.Add(dr[i].ToString());
+                                string dataValue = dr[i].ToString();
+                                bool dataNull = string.IsNullOrEmpty(dataValue);
+
+                                // Si esta vacio y es nulable, lo ponemos como nulo
+                                if (dataNull && pValidColumns[i].ColumnNullable)
+                                {
+                                    fieldData.Add("null");
+                                    continue;
+                                }
+
+                                // Si es entero, decimal o flotante, no es nulable y esta vacio
+                                if ((pValidColumns[i].ColumnType == EnumTypeColumn.Entero ||
+                                    pValidColumns[i].ColumnType == EnumTypeColumn.Decimal ||
+                                    pValidColumns[i].ColumnType == EnumTypeColumn.Flotante) && 
+                                    !pValidColumns[i].ColumnNullable && dataNull)
+                                {
+                                    fieldData.Add("0");
+                                    continue;
+                                }
+
+                                // Si es decimal o flotante, y no esta vacio
+                                // Sustituimos las comas por puntos
+                                if ((pValidColumns[i].ColumnType == EnumTypeColumn.Decimal ||
+                                    pValidColumns[i].ColumnType == EnumTypeColumn.Flotante) && !dataNull)
+                                {
+                                    dataValue = dataValue.Replace(",", ".");
+                                    fieldData.Add(dataValue);
+                                    continue;
+                                }
+
+                                dataValue = dataValue.Replace("'", "\"").Replace("\n", " ");
+                                fieldData.Add(dataValue);
                             }
 
                             string nameRow;
@@ -444,6 +478,56 @@ namespace PostgreSQLConnect
                     }
                 }
                 
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Devuelve las columnas de una tabla con su tipo, si son nulables y si son campos relacionales
+        /// </summary>
+        /// <param name="pTable"></param>
+        /// <returns></returns>
+        public IEnumerable<ColumnData> GetColumnsTypesInfoForTable(string pTable)
+        {
+            List<ColumnData> data = new List<ColumnData>();
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Declare the parameter in the query string
+                string querySql = string.Format(@"
+                SELECT column_name, udt_name, is_nullable
+                FROM information_schema.columns
+                WHERE table_name   = '{0}'", pTable);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            data.Add(new ColumnData
+                            {
+                                ColumnName = dr[0].ToString(),
+                                ColumnType = dr[1].ToString(),
+                                ColumnNullable = "YES".Equals(dr[2].ToString().ToUpper())
+                            });
+                        }
+                    }
+                }
+
             }
             catch (Exception ex)
             {

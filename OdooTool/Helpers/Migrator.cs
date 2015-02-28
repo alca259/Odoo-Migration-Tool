@@ -255,7 +255,7 @@ namespace OdooTool.Helpers
             return results.ToString();
         }
 
-        public static List<FieldResult> GenerateInserts(string pTableName, List<string> pValidColumns,
+        public static List<FieldResult> GenerateInserts(string pTableName, List<ColumnData> pValidColumns,
             DatabaseManage origManager, DatabaseManage destManager, RadProgressBar progressBarResult)
         {
             List<FieldResult> results = new List<FieldResult>();
@@ -263,23 +263,23 @@ namespace OdooTool.Helpers
             List<RowModel> dataDest;
 
             // Obtenemos todos los datos de origen de la tabla
-            if (pValidColumns.Contains("id"))
+            if (pValidColumns.Select(s => s.ColumnName).Contains("id"))
             {
                 dataOrig = origManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC",
-                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+                    string.Join("\", \"", pValidColumns.Select(s => s.ColumnName).OrderBy(o => o)), pTableName), pValidColumns);
 
                 // Obtenemos todos los datos de destino de la tabla
                 dataDest = destManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC",
-                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+                    string.Join("\", \"", pValidColumns.Select(s => s.ColumnName).OrderBy(o => o)), pTableName), pValidColumns);
             }
             else
             {
-                dataOrig = origManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1}", 
-                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+                dataOrig = origManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1}",
+                    string.Join("\", \"", pValidColumns.Select(s => s.ColumnName).OrderBy(o => o)), pTableName), pValidColumns);
 
                 // Obtenemos todos los datos de destino de la tabla
                 dataDest = destManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1}",
-                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+                    string.Join("\", \"", pValidColumns.Select(s => s.ColumnName).OrderBy(o => o)), pTableName), pValidColumns);
             }
 
             int rowCount = dataOrig.Count();
@@ -290,8 +290,24 @@ namespace OdooTool.Helpers
                 StringBuilder builderQuery = new StringBuilder();
 
                 // Generamos la query
-                builderQuery.AppendLine(string.Format("INSERT INTO {0} (\"{1}\") VALUES ('{2}')", pTableName,
-                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), string.Join("', '", row.Fields)));
+                builderQuery.Append(string.Format("INSERT INTO {0} (\"{1}\") VALUES (", pTableName,
+                    string.Join("\", \"", pValidColumns.Select(s => s.ColumnName).OrderBy(o => o))));
+
+                int fieldCount = row.Fields.Count;
+                int idx = 1;
+                foreach (var fieldValue in row.Fields)
+                {
+                    if ("null".Equals(fieldValue))
+                    {
+                        builderQuery.Append(idx < fieldCount ? "null, " : "null");
+                    }
+                    else
+                    {
+                        builderQuery.Append(idx < fieldCount ? string.Format("'{0}', ", fieldValue) : string.Format("'{0}'", fieldValue));
+                    }
+                    idx++;
+                }
+                builderQuery.AppendLine(")");
 
                 // Generamos el identificador a devolver
                 FieldResult rowResult = new FieldResult
