@@ -18,19 +18,27 @@ namespace OdooTool
             if (radioOneTable.IsChecked)
             {
                 SingleWindow singleWindow = new SingleWindow();
+                singleWindow.Disposed += closeThisForm;
+                singleWindow.Closed += closeThisForm;
                 singleWindow.Show();
-                //Dispose(false);
-                Close();
+                Hide();
             }
 
             if (radioAllTables.IsChecked)
             {
                 StartWindow startWindow = new StartWindow();
+                startWindow.Disposed += closeThisForm;
+                startWindow.Closed += closeThisForm;
                 startWindow.Show();
-                //Dispose(false);
-                Close();
+                Hide();
             }
         }
+
+        void closeThisForm(object sender, EventArgs e)
+        {
+            Close();
+        }
+
         #endregion
     }
 }

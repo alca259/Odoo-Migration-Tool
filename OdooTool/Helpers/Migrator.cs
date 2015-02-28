@@ -14,6 +14,13 @@ namespace OdooTool.Helpers
     /// </summary>
     public static class Migrator
     {
+        #region Common
+        private static string GetTime()
+        {
+            return DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+        }
+        #endregion
+
         #region Dblink generation & execution
         public static QueryResult Generate(List<TableModel> orig, List<TableModel> dest, bool disableConstraints)
         {
@@ -25,7 +32,7 @@ namespace OdooTool.Helpers
 
             if (!orig.Any() || !dest.Any())
             {
-                result.AppendLine("Nothing selected");
+                result.AppendLine(GetTime() + " - Nothing selected");
                 tablesResults.Querys = query;
                 tablesResults.Results = result;
                 tablesResults.CanBeExecuted = false;
@@ -36,7 +43,7 @@ namespace OdooTool.Helpers
             SettingsModel modelSettings = SettingsManager.GetXml();
             if (modelSettings == null)
             {
-                result.AppendLine("Settings not set");
+                result.AppendLine(GetTime() + " - Settings not set");
                 tablesResults.Querys = query;
                 tablesResults.Results = result;
                 tablesResults.CanBeExecuted = false;
@@ -52,7 +59,7 @@ namespace OdooTool.Helpers
                 // Si el nombre de la tabla, no coincide con las de origen, continuamos
                 if (!orig.Select(s => s.TableName.ToLower()).Contains(destTable.TableName.ToLower()))
                 {
-                    result.AppendLine(string.Format("{0} - The table cannot be found in origin selected tables", destTable.TableName));
+                    result.AppendLine(string.Format("{0} - {1} - The table cannot be found in origin selected tables", GetTime(), destTable.TableName));
                     tablesResults.CanBeExecuted = false;
                     continue;
                 }
@@ -71,7 +78,7 @@ namespace OdooTool.Helpers
 
                 if (!continuar)
                 {
-                    result.AppendLine(string.Format("{0} - The column {1} cannot be found in the origin selected table", destTable.TableName, columnNotFound));
+                    result.AppendLine(string.Format("{0} - {1} - The column {2} cannot be found in the origin selected table", GetTime(), destTable.TableName, columnNotFound));
                     tablesResults.CanBeExecuted = false;
                     continue;
                 }
@@ -92,8 +99,8 @@ namespace OdooTool.Helpers
                 query.AppendLine(string.Format("INSERT INTO {0} (\"{1}\") SELECT \"{1}\" FROM DBLINK('{2}', 'SELECT \"{1}\" FROM {0}') AS T1 ({3})",
                 destTable.TableName, string.Join("\", \"", destTable.Columns.OrderBy(o => o)), manager.GetConnectionStringForDbLink(), string.Join(", ", columnsAndTypes)));
 
-                result.AppendLine(string.Format("{0} - Can be migrated", destTable.TableName));
-                tablesResults.NumberOfTables++;
+                result.AppendLine(string.Format("{0} - {1} - Can be migrated", GetTime(), destTable.TableName));
+                tablesResults.NumberOfItems++;
             }
 
             tablesResults.Querys = query;
@@ -112,7 +119,7 @@ namespace OdooTool.Helpers
             SettingsModel model = SettingsManager.GetXml(true);
             if (model == null)
             {
-                results.AppendLine("Settings are not setted");
+                results.AppendLine(GetTime() + " - Settings are not setted");
                 return results.ToString();
             }
 
@@ -134,11 +141,11 @@ namespace OdooTool.Helpers
                     try
                     {
                         manager.ExecuteCommand(query);
-                        results.AppendLine(string.Format("Disabling constraints for table {0} - Disabled", tableName));
+                        results.AppendLine(string.Format("{0} - Disabling constraints for table {1} - Disabled", GetTime(), tableName));
                     }
                     catch (Exception ex)
                     {
-                        results.AppendLine(string.Format("Disabling constraints for table {0} - Cannot be disabled - Error: {1}", tableName, ex.Message));
+                        results.AppendLine(string.Format("{0} - Disabling constraints for table {1} - Cannot be disabled - Error: {2}", GetTime(), tableName, ex.Message));
                     }
                 }
             }
@@ -158,11 +165,11 @@ namespace OdooTool.Helpers
                 try
                 {
                     rowsAffected = manager.ExecuteCommand(query);
-                    results.AppendLine(string.Format("{0} - Migrated OK - Rows inserted: {1}", tableName, rowsAffected));
+                    results.AppendLine(string.Format("{0} - {1} - Migrated OK - Rows inserted: {2}", GetTime(), tableName, rowsAffected));
                 }
                 catch (Exception ex)
                 {
-                    results.AppendLine(string.Format("{0} - Migrated Error - Rows inserted: {1} - Error: {2}", tableName, rowsAffected, ex.Message));
+                    results.AppendLine(string.Format("{0} - {1} - Migrated Error - Rows inserted: {2} - Error: {3}", GetTime(), tableName, rowsAffected, ex.Message));
                 }
 
                 currentNumberTable++;
@@ -170,7 +177,12 @@ namespace OdooTool.Helpers
                 int table = currentNumberTable;
                 progressBarResult.BeginInvoke(new Action(() =>
                 {
-                    progressBarResult.Value1 = (int)(((float)table / result.NumberOfTables) * 100);
+                    int newValue = (int)(((float)table / result.NumberOfItems) * 100);
+                    if (newValue > 100)
+                    {
+                        newValue = 100;
+                    }
+                    progressBarResult.Value1 = newValue;
                 }));
             }
 
@@ -189,11 +201,11 @@ namespace OdooTool.Helpers
                     try
                     {
                         manager.ExecuteCommand(query);
-                        results.AppendLine(string.Format("Enabling constraints for table {0} - Enabled", tableName));
+                        results.AppendLine(string.Format("{0} - Enabling constraints for table {1} - Enabled", GetTime(), tableName));
                     }
                     catch (Exception ex)
                     {
-                        results.AppendLine(string.Format("Enabling constraints for table {0} - Cannot be enabled - Error: {1}", tableName, ex.Message));
+                        results.AppendLine(string.Format("{0} - Enabling constraints for table {1} - Cannot be enabled - Error: {2}", GetTime(), tableName, ex.Message));
                     }
                 }
             }
@@ -211,7 +223,7 @@ namespace OdooTool.Helpers
             SettingsModel model = SettingsManager.GetXml(true);
             if (model == null)
             {
-                results.AppendLine("Settings are not setted");
+                results.AppendLine(GetTime() + "Settings are not setted");
                 return results.ToString();
             }
 
@@ -224,16 +236,19 @@ namespace OdooTool.Helpers
                     "ALTER TABLE IF EXISTS {0} ENABLE TRIGGER ALL" :
                     "ALTER TABLE IF EXISTS {0} DISABLE TRIGGER ALL", table);
 
+                string mode = enable ? "Enabling" : "Disabling";
+                string action = enable ? "Enabled" : "Disabled";
+
                 if (string.IsNullOrWhiteSpace(query)) continue;
 
                 try
                 {
                     manager.ExecuteCommand(query);
-                    results.AppendLine(string.Format("Enabling constraints for table {0} - Enabled", table));
+                    results.AppendLine(string.Format("{0} - {1} constraints for table {2} - {3}", GetTime(), mode, table, action));
                 }
                 catch (Exception ex)
                 {
-                    results.AppendLine(string.Format("Enabling constraints for table {0} - Cannot be enabled - Error: {1}", table, ex.Message));
+                    results.AppendLine(string.Format("{0} - {1} constraints for table {2} - Cannot be {3} - Error: {4}", GetTime(), mode, table, action, ex.Message));
                 }
             }
 
@@ -241,23 +256,42 @@ namespace OdooTool.Helpers
         }
 
         public static List<FieldResult> GenerateInserts(string pTableName, List<string> pValidColumns,
-            DatabaseManage origManager, DatabaseManage destManager)
+            DatabaseManage origManager, DatabaseManage destManager, RadProgressBar progressBarResult)
         {
             List<FieldResult> results = new List<FieldResult>();
+            List<RowModel> dataOrig;
+            List<RowModel> dataDest;
 
             // Obtenemos todos los datos de origen de la tabla
-            var dataOrig = origManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC", string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+            if (pValidColumns.Contains("id"))
+            {
+                dataOrig = origManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC",
+                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
 
-            // Obtenemos todos los datos de destino de la tabla
-            var dataDest = destManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC", string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+                // Obtenemos todos los datos de destino de la tabla
+                dataDest = destManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC",
+                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+            }
+            else
+            {
+                dataOrig = origManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1}", 
+                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+
+                // Obtenemos todos los datos de destino de la tabla
+                dataDest = destManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1}",
+                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+            }
+
+            int rowCount = dataOrig.Count();
+            int rowIndex = 0;
 
             foreach (RowModel row in dataOrig)
             {
                 StringBuilder builderQuery = new StringBuilder();
 
                 // Generamos la query
-                builderQuery.AppendLine(string.Format("INSERT INTO {0} (\"{1}\") VALUES (\"{2}\")", pTableName,
-                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), string.Join("\", \"", row.Fields)));
+                builderQuery.AppendLine(string.Format("INSERT INTO {0} (\"{1}\") VALUES ('{2}')", pTableName,
+                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), string.Join("', '", row.Fields)));
 
                 // Generamos el identificador a devolver
                 FieldResult rowResult = new FieldResult
@@ -275,9 +309,71 @@ namespace OdooTool.Helpers
                 }
 
                 results.Add(rowResult);
+
+                rowIndex++;
+                progressBarResult.BeginInvoke(new Action(() =>
+                {
+                    int newValue = (int)(((float)rowIndex / rowCount) * 100);
+                    if (newValue > 100)
+                    {
+                        newValue = 100;
+                    }
+                    progressBarResult.Value1 = newValue;
+                }));
             }
 
             return results;
+        }
+
+        public static string ExecuteInserts(QueryResult querys, RadProgressBar progressBarResult)
+        {
+            StringBuilder results = new StringBuilder();
+
+            // Obtenemos la configuracion
+            SettingsModel model = SettingsManager.GetXml(true);
+            if (model == null)
+            {
+                results.AppendLine(GetTime() + " - Settings are not setted");
+                return results.ToString();
+            }
+
+            // Inicializamos el manager
+            DatabaseManage manager = new DatabaseManage(model);
+
+            int currentNumberRow = 0;
+            int rowsAffected = 0;
+
+            foreach (string query in querys.Querys.ToString().Split('\n'))
+            {
+                if (string.IsNullOrWhiteSpace(query)) continue;
+
+                try
+                {
+                    manager.ExecuteCommand(query);
+                    rowsAffected++;
+                }
+                catch (Exception ex)
+                {
+                    results.AppendLine(string.Format("{0} - Migrating error - Current query: {1} - Error: {2}", GetTime(), query, ex.Message));
+                }
+
+                currentNumberRow++;
+
+                progressBarResult.BeginInvoke(new Action(() =>
+                {
+                    int newValue = (int)(((float)currentNumberRow / querys.NumberOfItems) * 100);
+                    if (newValue > 100)
+                    {
+                        newValue = 100;
+                    }
+                    progressBarResult.Value1 = newValue;
+                }));
+            }
+            results.AppendLine(results.Length == 0
+                ? string.Format("{0} - Migrated OK - Rows inserted: {1}", GetTime(), rowsAffected)
+                : string.Format("{0} - Migrated with Errors - Rows inserted: {1}", GetTime(), rowsAffected));
+
+            return results.ToString();
         }
         
         #endregion

@@ -63,6 +63,16 @@ namespace OdooTool.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap clear_icon {
+            get {
+                object obj = ResourceManager.GetObject("clear_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap disable_icon {
             get {
                 object obj = ResourceManager.GetObject("disable_icon", resourceCulture);

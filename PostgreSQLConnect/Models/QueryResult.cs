@@ -8,7 +8,7 @@ namespace PostgreSQLConnect.Models
         public StringBuilder QuerysEnableConstraints { get; set; }
         public bool DisableConstraints { get; set; }
         public StringBuilder Querys { get; set; }
-        public int NumberOfTables { get; set; }
+        public int NumberOfItems { get; set; }
         public StringBuilder Results { get; set; }
         public bool CanBeExecuted { get; set; }
     }

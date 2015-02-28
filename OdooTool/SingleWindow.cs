@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using OdooTool.Helpers;
@@ -16,7 +17,6 @@ namespace OdooTool
     public partial class SingleWindow : RadForm
     {
         #region Properties
-        private QueryResult result { get; set; }
         private bool isProcessRunning = false;
         #endregion
 
@@ -25,7 +25,6 @@ namespace OdooTool
         {
             InitializeComponent();
             SettingsManager.Initialize();
-            result = new QueryResult();
             RadMessageBox.SetThemeName("VisualStudio2012Light");
         }
         #endregion
@@ -51,9 +50,25 @@ namespace OdooTool
                 DatabaseManage managerDest = new DatabaseManage(modelDest);
 
                 // Obtenemos las tablas
-                IEnumerable<string> tables = manager.GetTables();
+                List<string> tables = manager.GetTables().ToList();
+
+                int tableCount = tables.Count();
+                int tableIndex = 0;
+
                 foreach (string table in tables)
                 {
+                    tableIndex++;
+
+                    progressBarResult.BeginInvoke(new Action(() =>
+                    {
+                        int newValue = (int) (((float) tableIndex/tableCount)*100);
+                        if (newValue > 100)
+                        {
+                            newValue = 100;
+                        }
+                        progressBarResult.Value1 = newValue;
+                    }));
+
                     // Buscamos la tabla en la base de datos de destino,
                     // si no existe, no la mostramos
                     if (!managerDest.GetTableWithName(table)) continue;
@@ -75,19 +90,19 @@ namespace OdooTool
             }
         }
 
-        private void LoadGridTable(string pTableName)
+        private BindingSource LoadGridTable(string pTableName)
         {
             try
             {
                 // Obtenemos la configuracion del origen
                 SettingsModel model = SettingsManager.GetXml();
                 if (model == null)
-                    return;
+                    return null;
 
                 // Obtenemos la configuracion del destino
                 SettingsModel modelDest = SettingsManager.GetXml(true);
                 if (modelDest == null)
-                    return;
+                    return null;
 
                 // Inicializamos el manager de origen
                 DatabaseManage manager = new DatabaseManage(model);
@@ -110,133 +125,76 @@ namespace OdooTool
                 }
 
                 // Enviamos la tabla, y la lista de columnas validas, para que nos genere las querys
-                List<FieldResult> listFields = Migrator.GenerateInserts(pTableName, listColumns, manager, managerDest);
+                List<FieldResult> listFields = Migrator.GenerateInserts(pTableName, listColumns, manager, managerDest, progressBarResult);
 
                 // Asignamos los datos al grid
                 var bindingList = new BindingList<FieldResult>(listFields);
                 var source = new BindingSource(bindingList, null);
-                gridFields.DataSource = source;
+                return source;
             }
             catch (Exception ex)
             {
                 DisplayMessage(ex.Message);
             }
+
+            return null;
         }
 
         private void DisplayMessage(string message)
         {
-            RadMessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, RadMessageIcon.Exclamation,
-                MessageBoxDefaultButton.Button1);
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => RadMessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, RadMessageIcon.Exclamation,
+                    MessageBoxDefaultButton.Button1)));
+            }
+            else
+            {
+                RadMessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, RadMessageIcon.Exclamation,
+                   MessageBoxDefaultButton.Button1);   
+            }
         }
 
-        private List<TableModel> GetSelectedNodes(bool isDestination)
+        private QueryResult GetSelectedNodes()
         {
-            List<TableModel> tableList = new List<TableModel>();
+            QueryResult querys = new QueryResult
+            {
+                NumberOfItems = 0,
+                Querys = new StringBuilder(),
+                Results = new StringBuilder()
+            };
 
             try
             {
-                /*
-                var tree = isDestination ? treeDest : treeOrig;
-
-                // Creamos la lista de origen
-                foreach (RadTreeNode node in tree.Nodes)
+                foreach (GridViewRowInfo row in gridFields.Rows)
                 {
-                    switch (node.CheckState)
+                    var isSelected = (bool)row.Cells[0].Value;
+                    if (isSelected)
                     {
-                        case ToggleState.On:
-                            // Add table and all columns
-                            tableList.Add(new TableModel
-                            {
-                                TableName = node.Name,
-                                Columns = node.Nodes
-                                    .Select(column => column.Name)
-                                    .ToList()
-                            });
-                            break;
-                        case ToggleState.Indeterminate:
-                            // Check all columns of this table
-                            tableList.Add(new TableModel
-                            {
-                                TableName = node.Name,
-                                Columns = node.Nodes
-                                    .Where(w => w.CheckState == ToggleState.On)
-                                    .Select(column => column.Name)
-                                    .ToList()
-                            });
-                            break;
-                        case ToggleState.Off:
-                            // Ignoring
-                            break;
+                        querys.Querys.Append(row.Cells[3].Value);
+                        querys.NumberOfItems++;
                     }
                 }
-                */
             }
             catch (Exception ex)
             {
                 DisplayMessage(ex.Message);
             }
 
-            return tableList;
+            return querys;
+        }
+
+        private string ExecuteAllRowsSelected()
+        {
+            // Obtenemos todas las filas seleccionadas
+            QueryResult querys = GetSelectedNodes();
+
+            // Ejecutamos
+            return Migrator.ExecuteInserts(querys, progressBarResult);
         }
 
         #endregion
 
         #region Event methods
-        private void btnGenerate_Click(object sender, EventArgs e)
-        {
-            List<TableModel> tableListOrig = GetSelectedNodes(false);
-            List<TableModel> tableListDest = GetSelectedNodes(true);
-
-            // Send info about disable or not constraints
-            result = Migrator.Generate(tableListOrig, tableListDest, false);
-            btnExecute.Enabled = result.CanBeExecuted;
-            txtResult.Text = result.Results.ToString();
-        }
-
-        private void btnExecute3333_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!result.CanBeExecuted) return;
-
-                if (isProcessRunning)
-                {
-                    throw new Exception("A process is already running.");
-                }
-
-                btnExecute.Enabled = false;
-
-                Thread backgroundThread = new Thread(() =>
-                {
-                    isProcessRunning = true;
-                    string resultado = Migrator.ExecuteQuerys(result, progressBarResult);
-
-                    txtResult.BeginInvoke(new Action(() =>
-                    {
-                        txtResult.Text = resultado;
-                    }));
-
-                    progressBarResult.BeginInvoke(new Action(() =>
-                    {
-                        progressBarResult.Value1 = 0;
-                    }));
-
-                    btnExecute.BeginInvoke(new Action(() =>
-                    {
-                        btnExecute.Enabled = true;
-                    }));
-
-                    isProcessRunning = false;
-                });
-                backgroundThread.Start();
-            }
-            catch (Exception ex)
-            {
-                DisplayMessage(ex.Message);
-            }
-        }
-        #endregion
-
         private void btnSetSourceServer_Click(object sender, EventArgs e)
         {
             Settings settingsForm = new Settings();
@@ -251,7 +209,32 @@ namespace OdooTool
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
-            LoadComboTables();
+            if (isProcessRunning)
+            {
+                throw new Exception("A process is already running.");
+            }
+
+            refreshButton.Enabled = false;
+
+            Thread backgroundThread = new Thread(() =>
+            {
+                isProcessRunning = true;
+                
+                LoadComboTables();
+
+                progressBarResult.BeginInvoke(new Action(() =>
+                {
+                    progressBarResult.Value1 = 0;
+                }));
+
+                refreshButton.BeginInvoke(new Action(() =>
+                {
+                    refreshButton.Enabled = true;
+                }));
+
+                isProcessRunning = false;
+            });
+            backgroundThread.Start();
         }
 
         private void srcTableDropdown_SelectedIndexChanged(object sender, PositionChangedEventArgs e)
@@ -259,7 +242,50 @@ namespace OdooTool
             var data = sender as RadDropDownList;
             if (data != null && data.SelectedValue != null)
             {
-                LoadGridTable(data.SelectedValue.ToString());
+                if (isProcessRunning)
+                {
+                    throw new Exception("A process is already running.");
+                }
+
+                refreshButton.Enabled = false;
+                srcTableDropdown.Enabled = false;
+
+                Thread backgroundThread = new Thread(() =>
+                {
+                    isProcessRunning = true;
+
+                    var source = LoadGridTable(data.SelectedValue.ToString());
+
+                    gridFields.BeginInvoke(new Action(() =>
+                    {
+                        gridFields.DataSource = source;
+                        gridFields.BestFitColumns();
+                        gridFields.ReadOnly = false;
+                        gridFields.AllowAddNewRow = false;
+                        foreach (GridViewDataColumn column in gridFields.Columns)
+                        {
+                            column.ReadOnly = (column.Name != "Migrate");
+                        }
+                    }));
+
+                    progressBarResult.BeginInvoke(new Action(() =>
+                    {
+                        progressBarResult.Value1 = 0;
+                    }));
+
+                    refreshButton.BeginInvoke(new Action(() =>
+                    {
+                        refreshButton.Enabled = true;
+                    }));
+
+                    srcTableDropdown.BeginInvoke(new Action(() =>
+                    {
+                        srcTableDropdown.Enabled = true;
+                    }));
+
+                    isProcessRunning = false;
+                });
+                backgroundThread.Start();
             }
         }
 
@@ -275,7 +301,44 @@ namespace OdooTool
 
         private void btnExecute_Click(object sender, EventArgs e)
         {
+            if (isProcessRunning)
+            {
+                throw new Exception("A process is already running.");
+            }
 
+            btnExecute.Enabled = false;
+
+            Thread backgroundThread = new Thread(() =>
+            {
+                isProcessRunning = true;
+
+                string resultado = ExecuteAllRowsSelected();
+
+                txtResult.BeginInvoke(new Action(() =>
+                {
+                    txtResult.Text += resultado;
+                }));
+
+                progressBarResult.BeginInvoke(new Action(() =>
+                {
+                    progressBarResult.Value1 = 0;
+                }));
+
+                btnExecute.BeginInvoke(new Action(() =>
+                {
+                    btnExecute.Enabled = true;
+                }));
+
+                isProcessRunning = false;
+            });
+            backgroundThread.Start();
         }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtResult.Text = string.Empty;
+        }
+
+        #endregion
     }
 }

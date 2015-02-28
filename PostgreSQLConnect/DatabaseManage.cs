@@ -143,28 +143,28 @@ namespace PostgreSQLConnect
                                 fieldData.Add(dr[i].ToString());
                             }
 
-                            string nameRow = "";
-                            string idRow = "";
+                            string nameRow;
+                            string idRow;
+
                             try
                             {
                                 idRow = dr["id"].ToString();
                             }
-                            finally
+                            catch(Exception)
                             {
-                                if (string.IsNullOrEmpty(idRow))
-                                {
-                                    idRow = "0";
-                                }
+                                idRow = "0";
                             }
 
                             try
                             {
                                 nameRow = dr["name"].ToString();
                             }
-                            finally
+                            catch(Exception)
                             {
-                                data.Add(new RowModel { Fields = fieldData, Id = Convert.ToInt32(idRow), Name = nameRow });
+                                nameRow = "";
                             }
+
+                            data.Add(new RowModel { Fields = fieldData, Id = Convert.ToInt32(idRow), Name = nameRow });
                         }
                     }
                 }
