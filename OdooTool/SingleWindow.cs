@@ -19,6 +19,7 @@ namespace OdooTool
     {
         #region Properties
         private bool isProcessRunning = false;
+        private bool allSelected = true;
         #endregion
 
         #region Constructor
@@ -185,6 +186,21 @@ namespace OdooTool
             }
 
             return querys;
+        }
+
+        private void ToggleAllGrid()
+        {
+            try
+            {
+                foreach (GridViewRowInfo row in gridFields.Rows)
+                {
+                    row.Cells[0].Value = allSelected;
+                }
+            }
+            catch (Exception ex)
+            {
+                DisplayMessage(ex.Message);
+            }
         }
 
         private string ExecuteAllRowsSelected()
@@ -354,6 +370,12 @@ namespace OdooTool
             string name = saveFileDialog1.FileName;
             // Write to the file name selected.
             File.WriteAllText(name, string.Join(";", GetSelectedNodes().Querys.ToString().Split('\n')));
+        }
+
+        private void btnToggleSelect_Click(object sender, EventArgs e)
+        {
+            allSelected = !allSelected;
+            ToggleAllGrid();
         }
 
         #endregion
