@@ -636,6 +636,92 @@ namespace PostgreSQLConnect
 
             return result;
         }
+
+        /// <summary>
+        /// Devuelve el identificador máximo por tabla
+        /// </summary>
+        /// <param name="pTable"></param>
+        /// <returns></returns>
+        public int GetMaxIdForTable(string pTable)
+        {
+            // Vars
+            int result = 1;
+
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Declare the parameter in the query string
+                string querySql = string.Format("SELECT max(id) FROM {0}", pTable);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            int.TryParse(dr[0].ToString(), out result);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+
+            if (result <= 0) result = 1;
+
+            return result;
+        }
+
+        public IEnumerable<string> GetAllSequences()
+        {
+            // Vars
+            List<string> result = new List<string>();
+
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Declare the parameter in the query string
+                string querySql = "SELECT c.relname FROM pg_class c WHERE c.relkind = 'S' ORDER BY c.relname";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(dr[0].ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+
+            return result;
+        }
         #endregion
 
         #endregion

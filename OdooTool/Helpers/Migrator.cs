@@ -395,5 +395,41 @@ namespace OdooTool.Helpers
         }
         
         #endregion
+
+        #region Execution sequences
+        public static void ExecuteSequences(List<string> querys, RadProgressBar progressBarResult)
+        {
+            // Obtenemos la configuracion
+            SettingsModel model = SettingsManager.GetXml(true);
+            if (model == null)
+            {
+                return;
+            }
+
+            // Inicializamos el manager
+            DatabaseManage manager = new DatabaseManage(model);
+
+            int currentNumberSeq = 0;
+            int numSequences = querys.Count();
+
+            foreach (string query in querys)
+            {
+                if (string.IsNullOrWhiteSpace(query)) continue;
+
+                manager.ExecuteCommand(query);
+
+                currentNumberSeq++;
+                progressBarResult.BeginInvoke(new Action(() =>
+                {
+                    int newValue = (int)(((float)currentNumberSeq / numSequences) * 100);
+                    if (newValue > 100)
+                    {
+                        newValue = 100;
+                    }
+                    progressBarResult.Value1 = newValue;
+                }));
+            }
+        }
+        #endregion
     }
 }

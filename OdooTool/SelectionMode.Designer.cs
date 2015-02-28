@@ -34,23 +34,26 @@
             this.radioAllTables = new Telerik.WinControls.UI.RadRadioButton();
             this.radioOneTable = new Telerik.WinControls.UI.RadRadioButton();
             this.btnStart = new Telerik.WinControls.UI.RadButton();
+            this.radioSequences = new Telerik.WinControls.UI.RadRadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox1)).BeginInit();
             this.radGroupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.radioAllTables)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radioOneTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnStart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radioSequences)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
             // radGroupBox1
             // 
             this.radGroupBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
+            this.radGroupBox1.Controls.Add(this.radioSequences);
             this.radGroupBox1.Controls.Add(this.radioAllTables);
             this.radGroupBox1.Controls.Add(this.radioOneTable);
             this.radGroupBox1.HeaderText = "Select a option";
             this.radGroupBox1.Location = new System.Drawing.Point(71, 12);
             this.radGroupBox1.Name = "radGroupBox1";
-            this.radGroupBox1.Size = new System.Drawing.Size(175, 100);
+            this.radGroupBox1.Size = new System.Drawing.Size(175, 130);
             this.radGroupBox1.TabIndex = 0;
             this.radGroupBox1.Text = "Select a option";
             this.radGroupBox1.ThemeName = "VisualStudio2012Light";
@@ -82,7 +85,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(108, 118);
+            this.btnStart.Location = new System.Drawing.Point(111, 148);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(100, 29);
             this.btnStart.TabIndex = 1;
@@ -90,11 +93,23 @@
             this.btnStart.ThemeName = "VisualStudio2012Light";
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
+            // radioSequences
+            // 
+            this.radioSequences.Dock = System.Windows.Forms.DockStyle.Top;
+            this.radioSequences.Location = new System.Drawing.Point(2, 84);
+            this.radioSequences.Name = "radioSequences";
+            this.radioSequences.Padding = new System.Windows.Forms.Padding(0, 15, 0, 0);
+            this.radioSequences.Size = new System.Drawing.Size(76, 33);
+            this.radioSequences.TabIndex = 2;
+            this.radioSequences.TabStop = false;
+            this.radioSequences.Text = "Sequences";
+            this.radioSequences.ThemeName = "VisualStudio2012Light";
+            // 
             // SelectionMode
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(331, 170);
+            this.ClientSize = new System.Drawing.Size(331, 207);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.radGroupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -115,6 +130,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.radioAllTables)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radioOneTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnStart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radioSequences)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
@@ -127,5 +143,6 @@
         private Telerik.WinControls.UI.RadRadioButton radioAllTables;
         private Telerik.WinControls.UI.RadRadioButton radioOneTable;
         private Telerik.WinControls.UI.RadButton btnStart;
+        private Telerik.WinControls.UI.RadRadioButton radioSequences;
     }
 }

@@ -113,6 +113,12 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="SequenceWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SequenceWindow.Designer.cs">
+      <DependentUpon>SequenceWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="SingleWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,6 +142,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequenceWindow.resx">
+      <DependentUpon>SequenceWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SingleWindow.resx">
       <DependentUpon>SingleWindow.cs</DependentUpon>

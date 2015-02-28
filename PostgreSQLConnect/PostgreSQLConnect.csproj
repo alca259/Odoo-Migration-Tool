@@ -61,6 +61,7 @@
     <Compile Include="Models\RowModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Models\TableModel.cs" />
+    <Compile Include="Models\TableSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

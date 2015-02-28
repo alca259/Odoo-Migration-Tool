@@ -32,6 +32,15 @@ namespace OdooTool
                 startWindow.Show();
                 Hide();
             }
+
+            if (radioSequences.IsChecked)
+            {
+                SequenceWindow window = new SequenceWindow();
+                window.Disposed += closeThisForm;
+                window.Closed += closeThisForm;
+                window.Show();
+                Hide();
+            }
         }
 
         void closeThisForm(object sender, EventArgs e)
