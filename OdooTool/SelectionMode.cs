@@ -19,14 +19,16 @@ namespace OdooTool
             {
                 SingleWindow singleWindow = new SingleWindow();
                 singleWindow.Show();
-                Dispose(false);
+                //Dispose(false);
+                Close();
             }
 
             if (radioAllTables.IsChecked)
             {
                 StartWindow startWindow = new StartWindow();
                 startWindow.Show();
-                Dispose(false);
+                //Dispose(false);
+                Close();
             }
         }
         #endregion

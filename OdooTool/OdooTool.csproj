@@ -152,7 +152,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
+    <Content Include="Images\disable-icon.png" />
+    <Content Include="Images\enable-icon.png" />
     <Content Include="Images\Icon.ico" />
+    <Content Include="Images\reload-icon.png" />
+    <Content Include="Images\run-icon.png" />
     <Content Include="Images\tool-icon.png" />
     <Content Include="Images\ToRight.png" />
   </ItemGroup>

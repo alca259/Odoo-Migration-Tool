@@ -8,8 +8,8 @@ using OdooTool.Helpers;
 using PostgreSQLConnect;
 using PostgreSQLConnect.Models;
 using Telerik.WinControls;
-using Telerik.WinControls.Enumerations;
 using Telerik.WinControls.UI;
+using PositionChangedEventArgs = Telerik.WinControls.UI.Data.PositionChangedEventArgs;
 
 namespace OdooTool
 {
@@ -32,48 +32,90 @@ namespace OdooTool
 
         #region Private methods
 
-        private void LoadTable(bool isDestination)
+        private void LoadComboTables()
         {
             try
             {
-                // Obtenemos la configuracion
-                SettingsModel model = SettingsManager.GetXml(isDestination);
+                // Obtenemos la configuracion del origen
+                SettingsModel model = SettingsManager.GetXml();
                 if (model == null)
                     return;
 
-                // Limpiamos el arbol
-                if (isDestination)
-                {
-                    treeDest.Nodes.Clear();
-                }
-                else
-                {
-                    treeOrig.Nodes.Clear();
-                }
+                // Obtenemos la configuracion del destino
+                SettingsModel modelDest = SettingsManager.GetXml(true);
 
-                // Inicializamos el manager
+                // Inicializamos el manager de origen
                 DatabaseManage manager = new DatabaseManage(model);
+
+                // Inicializamos el manager de destino
+                DatabaseManage managerDest = new DatabaseManage(modelDest);
 
                 // Obtenemos las tablas
                 IEnumerable<string> tables = manager.GetTables();
                 foreach (string table in tables)
                 {
+                    // Buscamos la tabla en la base de datos de destino,
+                    // si no existe, no la mostramos
+                    if (!managerDest.GetTableWithName(table)) continue;
+
                     // Buscamos el numero de filas
-                    string numRows = manager.GetRowsForTable(table);
+                    string numRows = manager.GetCurrentRowsForTable(table);
 
-                    // Agregamos la tabla al arbol
-                    RadTreeNode tableNode = isDestination ?
-                        treeDest.Nodes.Add(table, string.Format("{0} ({1})", table, numRows), "") :
-                        treeOrig.Nodes.Add(table, string.Format("{0} ({1})", table, numRows), "");
-
-                    // Obtenemos las columnas de la tabla
-                    IEnumerable<string> columns = manager.GetColumnsForTable(table);
-                    foreach (string column in columns)
+                    // Agregamos la tabla al combo
+                    srcTableDropdown.Items.Add(new RadListDataItem
                     {
-                        // Agregamos la columna al nodo de la tabla
-                        tableNode.Nodes.Add(column);
-                    }
+                        Value = table,
+                        Text = string.Format("{0} ({1})", table, numRows)
+                    });
                 }
+            }
+            catch (Exception ex)
+            {
+                DisplayMessage(ex.Message);
+            }
+        }
+
+        private void LoadGridTable(string pTableName)
+        {
+            try
+            {
+                // Obtenemos la configuracion del origen
+                SettingsModel model = SettingsManager.GetXml();
+                if (model == null)
+                    return;
+
+                // Obtenemos la configuracion del destino
+                SettingsModel modelDest = SettingsManager.GetXml(true);
+                if (modelDest == null)
+                    return;
+
+                // Inicializamos el manager de origen
+                DatabaseManage manager = new DatabaseManage(model);
+
+                // Inicializamos el manager de destino
+                DatabaseManage managerDest = new DatabaseManage(modelDest);
+
+                List<string> listColumns = new List<string>();
+
+                // Obtenemos las columnas de la tabla de origen
+                IEnumerable<string> columns = manager.GetColumnsForTable(pTableName);
+                foreach (string column in columns)
+                {
+                    // Buscamos la columna en la base de datos de destino,
+                    // si no existe, no la guardaremos
+                    if (!managerDest.GetColumnWithNameForTable(pTableName, column)) continue;
+
+                    // Agregamos la columna al listado
+                    listColumns.Add(column);
+                }
+
+                // Enviamos la tabla, y la lista de columnas validas, para que nos genere las querys
+                List<FieldResult> listFields = Migrator.GenerateInserts(pTableName, listColumns, manager, managerDest);
+
+                // Asignamos los datos al grid
+                var bindingList = new BindingList<FieldResult>(listFields);
+                var source = new BindingSource(bindingList, null);
+                gridFields.DataSource = source;
             }
             catch (Exception ex)
             {
@@ -93,6 +135,7 @@ namespace OdooTool
 
             try
             {
+                /*
                 var tree = isDestination ? treeDest : treeOrig;
 
                 // Creamos la lista de origen
@@ -126,6 +169,7 @@ namespace OdooTool
                             break;
                     }
                 }
+                */
             }
             catch (Exception ex)
             {
@@ -135,96 +179,21 @@ namespace OdooTool
             return tableList;
         }
 
-        private void CheckUncheckOrig(RadTreeNode currentNode)
-        {
-            RadTreeNode foundNode;
-            RadTreeNode currentParentNode;
-
-            // Determinar si el nodo actual es un campo o una tabla
-            if (currentNode.Parent == null)
-            {
-                // Tabla
-                // Buscamos la tabla en los nodos del arbol de origen
-                foundNode = treeOrig.Nodes.SingleOrDefault(a => a.Name.ToLower() == currentNode.Name.ToLower());
-                currentParentNode = currentNode;
-            }
-            else
-            {
-                // Campo
-                foundNode = treeOrig.Nodes.SingleOrDefault(a => a.Name.ToLower() == currentNode.Parent.Name.ToLower());
-                currentParentNode = currentNode.Parent;
-            }
-
-            if (foundNode == null)
-                return;
-
-            switch (currentParentNode.CheckState)
-            {
-                case ToggleState.On:
-                    // Add table and all columns
-                    foundNode.CheckState = ToggleState.On;
-                    foreach (RadTreeNode childFoundNode in foundNode.Nodes)
-                    {
-                        childFoundNode.CheckState = ToggleState.On;
-                    }
-                    break;
-                case ToggleState.Indeterminate:
-                    // Check only column of current node
-                    // Looking for child on found node
-                    foreach (RadTreeNode childFoundNode in foundNode.Nodes.Where(childFoundNode => currentNode.Name.ToLower() == childFoundNode.Name.ToLower()))
-                    {
-                        childFoundNode.CheckState = currentNode.CheckState;
-                    }
-                    break;
-                case ToggleState.Off:
-                    // Remove table and all columns
-                    foundNode.CheckState = ToggleState.Off;
-                    foreach (RadTreeNode childFoundNode in foundNode.Nodes)
-                    {
-                        childFoundNode.CheckState = ToggleState.Off;
-                    }
-                    break;
-            }
-        }
-
         #endregion
 
         #region Event methods
-        private void loadSourceTables_Click(object sender, System.EventArgs e)
-        {
-            LoadTable(false);
-        }
-
-        private void loadDestinationTables_Click(object sender, System.EventArgs e)
-        {
-            LoadTable(true);
-        }
-
-        private void btnSetSourceServer_Click(object sender, System.EventArgs e)
-        {
-            Settings settingsForm = new Settings();
-            settingsForm.ShowDialog(this);
-        }
-
-        private void btnSetDestinationServer_Click(object sender, System.EventArgs e)
-        {
-            Settings settingsForm = new Settings(true);
-            settingsForm.ShowDialog(this);
-        }
-
-        private void btnGenerate_Click(object sender, System.EventArgs e)
+        private void btnGenerate_Click(object sender, EventArgs e)
         {
             List<TableModel> tableListOrig = GetSelectedNodes(false);
             List<TableModel> tableListDest = GetSelectedNodes(true);
 
             // Send info about disable or not constraints
-            result = Migrator.Generate(tableListOrig, tableListDest, checkDisableConstraints.IsChecked);
+            result = Migrator.Generate(tableListOrig, tableListDest, false);
             btnExecute.Enabled = result.CanBeExecuted;
-            btnCopy.Enabled = result.CanBeExecuted;
             txtResult.Text = result.Results.ToString();
         }
 
-        private void btnExecute_Click(object sender, System.EventArgs e)
+        private void btnExecute3333_Click(object sender, EventArgs e)
         {
             try
             {
@@ -266,27 +235,47 @@ namespace OdooTool
                 DisplayMessage(ex.Message);
             }
         }
-
-        private void treeDest_NodeCheckedChanged(object sender, TreeNodeCheckedEventArgs e)
-        {
-            result.CanBeExecuted = false;
-            btnExecute.Enabled = false;
-            btnCopy.Enabled = false;
-
-            CheckUncheckOrig(e.Node);
-        }
-
-        private void btnCopy_Click(object sender, EventArgs e)
-        {
-            if (!result.DisableConstraints)
-            {
-                Clipboard.SetText(result.Querys.ToString());
-            }
-            else
-            {
-                Clipboard.SetText(result.QuerysDisableConstraints.ToString() + result.Querys.ToString() + result.QuerysEnableConstraints.ToString());
-            }
-        }
         #endregion
+
+        private void btnSetSourceServer_Click(object sender, EventArgs e)
+        {
+            Settings settingsForm = new Settings();
+            settingsForm.ShowDialog(this);
+        }
+
+        private void btnSetDestinationServer_Click(object sender, EventArgs e)
+        {
+            Settings settingsForm = new Settings(true);
+            settingsForm.ShowDialog(this);
+        }
+
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            LoadComboTables();
+        }
+
+        private void srcTableDropdown_SelectedIndexChanged(object sender, PositionChangedEventArgs e)
+        {
+            var data = sender as RadDropDownList;
+            if (data != null && data.SelectedValue != null)
+            {
+                LoadGridTable(data.SelectedValue.ToString());
+            }
+        }
+
+        private void btnDisableConst_Click(object sender, EventArgs e)
+        {
+            txtResult.Text += Migrator.ToggleContraints(srcTableDropdown.Items.Select(s => s.Value.ToString()));
+        }
+
+        private void btnEnableConst_Click(object sender, EventArgs e)
+        {
+            txtResult.Text += Migrator.ToggleContraints(srcTableDropdown.Items.Select(s => s.Value.ToString()), true);
+        }
+
+        private void btnExecute_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -121,9 +121,9 @@ namespace PostgreSQLConnect
         /// </summary>
         /// <param name="pQuery">String query</param>
         /// <returns>Lista de objetos</returns>
-        public List<List<string>> ExecuteQueryList(string pQuery)
+        public List<RowModel> ExecuteQueryList(string pQuery)
         {
-            List<List<string>> data = new List<List<string>>();
+            List<RowModel> data = new List<RowModel>();
             try
             {
                 // Conectar a la base de datos
@@ -143,7 +143,28 @@ namespace PostgreSQLConnect
                                 fieldData.Add(dr[i].ToString());
                             }
 
-                            data.Add(fieldData);
+                            string nameRow = "";
+                            string idRow = "";
+                            try
+                            {
+                                idRow = dr["id"].ToString();
+                            }
+                            finally
+                            {
+                                if (string.IsNullOrEmpty(idRow))
+                                {
+                                    idRow = "0";
+                                }
+                            }
+
+                            try
+                            {
+                                nameRow = dr["name"].ToString();
+                            }
+                            finally
+                            {
+                                data.Add(new RowModel { Fields = fieldData, Id = Convert.ToInt32(idRow), Name = nameRow });
+                            }
                         }
                     }
                 }
@@ -243,6 +264,52 @@ namespace PostgreSQLConnect
         }
 
         /// <summary>
+        /// Devuelve booleano si encuentra la tabla suministrada por parametro
+        /// </summary>
+        /// <returns></returns>
+        public bool GetTableWithName(string pTableName)
+        {
+            bool result = false;
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Declare the parameter in the query string
+                using (NpgsqlCommand command = new NpgsqlCommand(string.Format(@"
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE    table_schema = 'public' 
+                    AND table_catalog = '{0}'
+                    AND table_name = '{1}'
+                    AND table_type = 'BASE TABLE'
+                ORDER BY table_name", Database, pTableName), conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Devuelve las columnas de una tabla
         /// </summary>
         /// <param name="pTable"></param>
@@ -285,6 +352,54 @@ namespace PostgreSQLConnect
                 Disconnect();
             }
             return data;
+        }
+
+        /// <summary>
+        /// Busca una columna en una tabla, devuelve booleano
+        /// </summary>
+        /// <param name="pTable"></param>
+        /// <param name="pColumnName"></param>
+        /// <returns></returns>
+        public bool GetColumnWithNameForTable(string pTable, string pColumnName)
+        {
+            bool result = false;
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Declare the parameter in the query string
+                string querySql = string.Format(@"
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name   = '{0}'
+                AND column_name    = '{1}'
+                ORDER BY column_name", pTable, pColumnName);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+            return result;
         }
 
         /// <summary>
@@ -365,6 +480,51 @@ namespace PostgreSQLConnect
                 SELECT n_live_tup 
                 FROM pg_stat_user_tables 
                 WHERE relname = '{0}'", pTable);
+
+                using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
+                {
+                    using (NpgsqlDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result = dr[0].ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+                throw new PostgreSqlException(ex.Message, ex);
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Disconnect();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Devuelve el numero de filas actuales en una tabla
+        /// </summary>
+        /// <param name="pTable"></param>
+        /// <returns></returns>
+        public string GetCurrentRowsForTable(string pTable)
+        {
+            // Vars
+            string result = "0";
+
+            try
+            {
+                // Conectar a la base de datos
+                Connect();
+
+                // Declare the parameter in the query string
+                string querySql = string.Format("SELECT count(1) FROM {0}", pTable);
 
                 using (NpgsqlCommand command = new NpgsqlCommand(querySql, conn))
                 {

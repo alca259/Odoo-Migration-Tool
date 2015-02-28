@@ -14,6 +14,7 @@ namespace OdooTool.Helpers
     /// </summary>
     public static class Migrator
     {
+        #region Dblink generation & execution
         public static QueryResult Generate(List<TableModel> orig, List<TableModel> dest, bool disableConstraints)
         {
             QueryResult tablesResults = new QueryResult {CanBeExecuted = true};
@@ -199,5 +200,86 @@ namespace OdooTool.Helpers
 
             return results.ToString();
         }
+        #endregion
+
+        #region Inserts generation & execution
+        public static string ToggleContraints(IEnumerable<string> tableList, bool enable = false)
+        {
+            StringBuilder results = new StringBuilder();
+
+            // Obtenemos la configuracion
+            SettingsModel model = SettingsManager.GetXml(true);
+            if (model == null)
+            {
+                results.AppendLine("Settings are not setted");
+                return results.ToString();
+            }
+
+            // Inicializamos el manager
+            DatabaseManage manager = new DatabaseManage(model);
+
+            foreach (string table in tableList)
+            {
+                string query = string.Format(enable ?
+                    "ALTER TABLE IF EXISTS {0} ENABLE TRIGGER ALL" :
+                    "ALTER TABLE IF EXISTS {0} DISABLE TRIGGER ALL", table);
+
+                if (string.IsNullOrWhiteSpace(query)) continue;
+
+                try
+                {
+                    manager.ExecuteCommand(query);
+                    results.AppendLine(string.Format("Enabling constraints for table {0} - Enabled", table));
+                }
+                catch (Exception ex)
+                {
+                    results.AppendLine(string.Format("Enabling constraints for table {0} - Cannot be enabled - Error: {1}", table, ex.Message));
+                }
+            }
+
+            return results.ToString();
+        }
+
+        public static List<FieldResult> GenerateInserts(string pTableName, List<string> pValidColumns,
+            DatabaseManage origManager, DatabaseManage destManager)
+        {
+            List<FieldResult> results = new List<FieldResult>();
+
+            // Obtenemos todos los datos de origen de la tabla
+            var dataOrig = origManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC", string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+
+            // Obtenemos todos los datos de destino de la tabla
+            var dataDest = destManager.ExecuteQueryList(string.Format("SELECT \"{0}\" FROM {1} ORDER BY id ASC", string.Join("\", \"", pValidColumns.OrderBy(o => o)), pTableName));
+
+            foreach (RowModel row in dataOrig)
+            {
+                StringBuilder builderQuery = new StringBuilder();
+
+                // Generamos la query
+                builderQuery.AppendLine(string.Format("INSERT INTO {0} (\"{1}\") VALUES (\"{2}\")", pTableName,
+                    string.Join("\", \"", pValidColumns.OrderBy(o => o)), string.Join("\", \"", row.Fields)));
+
+                // Generamos el identificador a devolver
+                FieldResult rowResult = new FieldResult
+                {
+                    Id = row.Id,
+                    Name = row.Name,
+                    Query = builderQuery.ToString(),
+                    Migrate = true
+                };
+
+                // Si ya existe un registro con el mismo identificador, automáticamente lo desmarcamos
+                if (dataDest.Any(w => w.Id == row.Id) && row.Id > 0)
+                {
+                    rowResult.Migrate = false;
+                }
+
+                results.Add(rowResult);
+            }
+
+            return results;
+        }
+        
+        #endregion
     }
 }
