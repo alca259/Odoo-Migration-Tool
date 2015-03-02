@@ -116,7 +116,7 @@ namespace OdooTool
                     if (!isSelected) continue;
 
                     string querySQL = string.Format("ALTER SEQUENCE {0} RESTART WITH {1}",
-                        row.Cells[1].Value, row.Cells[3].Value);
+                        row.Cells[1].Value, (int)row.Cells[3].Value + 1);
                     querys.Add(querySQL);
                 }
             }
